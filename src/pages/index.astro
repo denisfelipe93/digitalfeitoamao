@@ -1,11 +1,38 @@
 ---
-import Welcome from '../components/Welcome.astro';
+/* Página inicial:
+   - Usa o Layout base
+   - Renderiza a ilha de loading (Preloader.vue)
+   - Traz um conteúdo provisório só para ver a página após o loading
+*/
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Preloader from '../components/Preloader.vue';
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Direção criativa — branding, identidade e conteúdo">
+  <!-- Loading (aparece só na 1ª visita; pode pular com 'Saltar intro' ou ESC) -->
+  <Preloader client:load />
+
+  <!-- Conteúdo provisório (substituir depois por Navbar/Hero/Seções) -->
+  <section class="min-h-[70vh] grid place-items-center px-6">
+    <div class="text-center max-w-2xl">
+      <h1 class="text-4xl md:text-6xl font-semibold">Home</h1>
+      <p class="mt-4 opacity-80">
+        Se você está vendo isto após o overlay, o loading está funcionando.
+      </p>
+      <div class="mt-10 rounded-xl p-4 ring-1 ring-emerald-500 bg-emerald-500/15">
+        Tailwind + Astro OK ✅
+      </div>
+    </div>
+  </section>
+
+  <!-- Exemplos de âncoras futuras (comentado):
+  <Navbar />
+  <HeroVideo />
+  <Services />
+  <Process />
+  <Portfolio />
+  <Testimonials />
+  <About />
+  <Contact />
+  -->
 </Layout>

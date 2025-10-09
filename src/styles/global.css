@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+/* ajustes leves */
+:root { scroll-behavior: smooth; }
+html, body { min-height: 100%; }
+body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
