@@ -6,24 +6,19 @@
 */
 import Layout from '../layouts/Layout.astro'
 import Preloader from '../components/Preloader.vue'
-import Hero from '../components/Hero.vue'
+import HeroScroll from '../components/HeroScroll.vue'
 import capa from '../assets/hero/capa.webp?url'
 ---
 
 <Layout title="Direção criativa — branding, identidade e conteúdo">
   <Preloader client:load />
 
-  <Hero
-  titulo="Digital feito à mão"
-  subtitulo="Branding, identidade visual e experiências web sob medida."
-  selo="Estúdio criativo"
-  alinhamento="esquerda"
+ <HeroScroll
+  titulo="digital feito a mão"
   imageSrc={capa}
   imageAlt="Equipe de filmagem em jardim durante uma produção"
   imageSrcset={{ webp: capa }}
-  ctaPrimaria={{ rotulo: 'Fale conosco', href: '#contato' }}
-  ctaSecundaria={{ rotulo: 'Ver portfólio', href: '#projetos' }}
+  overlay={82}
   client:visible
 />
-</Layout>
 </Layout>
