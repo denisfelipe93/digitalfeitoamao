@@ -1,3 +1,4 @@
+<!-- Hero.vue -->
 <template>
   <!-- mais runway para o scroll ficar bem lento -->
   <section ref="sectionEl" class="relative h-[220svh] bg-white">
@@ -26,53 +27,78 @@
         </video>
 
         <!-- OVERLAYS -->
-        <!-- camada base: super escura que abre com o scroll -->
         <div class="absolute inset-0" :style="overlayStyle" />
-
-        <!-- vinheta suave padrão (centro) -->
         <div class="absolute inset-0 pointer-events-none bg-[radial-gradient(transparent_60%,rgba(0,0,0,0.5))]" />
-
-        <!-- VINHETA INVERSA: escurece MAIS o lado esquerdo no início (desaparece com o scroll) -->
         <div class="absolute inset-0 pointer-events-none" :style="leftVignetteStyle" />
-
-        <!-- gradiente de topo para legibilidade da navbar -->
         <div class="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/30 to-transparent" />
       </div>
 
       <!-- NAVBAR -->
-      <nav class="absolute left-0 right-0 top-0">
+      <nav
+        class="absolute inset-x-0 top-0 z-20 transition-colors duration-300"
+        :style="navStyle"
+      >
+        <!-- vidro ocupa 100% da largura -->
         <div
-          class="max-w-7xl mx-auto px-6 md:px-8 lg:px-12 py-4 flex items-center justify-between transition"
-          :class="{'backdrop-blur-md': navSolid}"
-          :style="navStyle"
+          class="absolute inset-0 transition-[backdrop-filter,background-color,box-shadow] duration-300"
+          :class="{'backdrop-blur-xl backdrop-saturate-150 ring-1 ring-white/10': navSolid}"
+        ></div>
+
+        <!-- conteúdo centralizado -->
+        <div
+          class="relative max-w-7xl mx-auto px-6 md:px-8 lg:px-12
+                flex items-center justify-between py-5 md:py-6"
         >
-          <div class="font-sans font-semibold tracking-[0.18em] uppercase text-[0.9rem] md:text-[1rem] text-white">
+          <!-- Marca com blur->nítido -->
+          <div
+            class="font-sans font-semibold tracking-[0.18em] uppercase
+                  text-white text-[1.05rem] md:text-[1.2rem]"
+            :style="brandRevealStyle"
+          >
             Digital Feito à Mão
           </div>
-          <ul class="hidden md:flex gap-8 font-sans text-[0.75rem] md:text-[0.8rem] tracking-[0.22em] uppercase font-medium">
-            <li><a href="#servicos" class="relative hover:opacity-100 after:absolute after:left-0 after:bottom-[-2px] after:h-[1px] after:w-0 after:bg-white/70 after:transition-all after:duration-300 hover:after:w-full">Serviços</a></li>
-            <li><a href="#jornada" class="relative hover:opacity-100 after:absolute after:left-0 after:bottom-[-2px] after:h-[1px] after:w-0 after:bg-white/70 after:transition-all after:duration-300 hover:after:w-full">Como funciona</a></li>
-            <li><a href="#depoimentos" class="relative hover:opacity-100 after:absolute after:left-0 after:bottom-[-2px] after:h-[1px] after:w-0 after:bg-white/70 after:transition-all after:duration-300 hover:after:w-full">O que dizem</a></li>
-            <li><a href="#contato" class="relative hover:opacity-100 after:absolute after:left-0 after:bottom-[-2px] after:h-[1px] after:w-0 after:bg-white/70 after:transition-all after:duration-300 hover:after:w-full">Contato</a></li>
+
+          <!-- Links com blur->nítido (stagger) -->
+          <ul
+            class="hidden md:flex items-center
+                  gap-9 lg:gap-10
+                  font-sans uppercase font-medium
+                  text-[0.85rem] md:text-[0.9rem] tracking-[0.22em]"
+          >
+            <li v-for="(item, i) in navItems" :key="item.href">
+              <a
+                :href="item.href"
+                class="inline-flex items-center rounded-md
+                      text-white/85 hover:text-white
+                      focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60
+                      transition duration-200
+                      hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.95)]"
+                :style="linkRevealStyle(i)"
+              >
+                {{ item.label }}
+              </a>
+            </li>
           </ul>
         </div>
       </nav>
 
+
       <!-- CONTEÚDO -->
       <div class="h-full w-full">
         <div class="max-w-7xl mx-auto h-full px-6 md:px-8 lg:px-12 flex items-center">
-          <div class="w-full text-left">
+          <div class="w-full" :class="alignTextClass">
             <div class="will-change-transform" :style="titleStyle">
               <h1 class="font-semibold leading-[0.95] tracking-[-0.01em]" :style="{ fontSize: clampRem(2.6, 6.0) }">
                 {{ titulo }}
               </h1>
             </div>
 
-            <div class="mt-7 md:mt-9 max-w-2xl" :style="revealStyle">
+            <!-- subtítulo e CTA seguem o alinhamento -->
+            <div class="mt-7 md:mt-9 max-w-2xl" :class="subBlockClass" :style="revealStyle">
               <p v-if="subtitulo" class="text-white/90 text-base md:text-lg">
                 {{ subtitulo }}
               </p>
-              <div v-if="ctaPrimaria" class="mt-6 flex flex-wrap gap-3">
+              <div v-if="ctaPrimaria" class="mt-6 flex flex-wrap gap-3" :class="ctaJustifyClass">
                 <a :href="ctaPrimaria.href"
                    :style="ctaDelayStyle"
                    class="rounded-2xl px-5 py-3 text-sm md:text-base font-medium bg-white text-black hover:opacity-90 transition">
@@ -175,11 +201,11 @@ const remapClamped = (from: number, to: number, v: number) => clamp01((v - from)
 
 // UI tuning
 const TARGET_GUTTER_VW = 5
-const START_TX_VW     = 30   // começa bem mais à direita
-const START_DELAY     = 0.14 // segura um pouco antes de iniciar
-const END_PHASE       = 0.90 // viaja por bastante scroll
+const START_TX_VW     = 30
+const START_DELAY     = 0.14
+const END_PHASE       = 0.90
 
-// título: transform puro (sem reflow)
+// título
 const titleStyle = computed(() => {
   const phase = remapClamped(START_DELAY, END_PHASE, smoothProgress.value)
   const p = easeInOutSine(phase)
@@ -207,15 +233,15 @@ const ctaDelayStyle = computed(() => ({
   transitionDelay: `${Math.round(140 * clamp01((smoothProgress.value - (START_DELAY + 0.16)) / 0.50))}ms`
 }))
 
-// navbar
-const navSolid = computed(() => smoothProgress.value >= 0.35)
+// navbar (timing + vidro sólido)
+const navSolid = computed(() => smoothProgress.value >= 0.30)
 const navStyle = computed(() => ({
-  opacity: clamp01((smoothProgress.value - 0.20) / 0.25).toFixed(3),
-  backgroundColor: navSolid.value ? 'rgba(0,0,0,0.38)' : 'transparent',
-  boxShadow: navSolid.value ? '0 2px 20px rgba(0,0,0,0.25)' : 'none'
+  opacity: clamp01((smoothProgress.value - 0.12) / 0.22).toFixed(3),
+  backgroundColor: navSolid.value ? 'rgba(0,0,0,0.46)' : 'transparent',
+  boxShadow: navSolid.value ? '0 6px 28px rgba(0,0,0,0.32)' : 'none'
 }))
 
-// overlay base (98% -> ~32%) abre devagar
+// overlay base
 const overlayStyle = computed(() => {
   const start = Math.min(100, Math.max(0, props.overlay)) / 100
   const end = 0.32
@@ -224,19 +250,75 @@ const overlayStyle = computed(() => {
   return { backgroundColor: `rgba(0,0,0,${alpha})` }
 })
 
-/**
- * Vinheta inversa dinâmica:
- * - Um radial grande ancorado à ESQUERDA que é forte no começo e some com o scroll.
- * - Ajuda a “apagar” o lado esquerdo, destacando a entrada do título pela direita.
- */
+/** vinheta inversa dinâmica */
 const leftVignetteStyle = computed(() => {
-  const t = remapClamped(0, 0.65, smoothProgress.value)        // some até ~65% do caminho
-  const a = lerp(0.58, 0.0, easeInOutSine(t))                  // opacidade da vinheta
-  // elipse grande (60vw x 85vh) ancorada ~10% à esquerda, foco no meio vertical
+  const t = remapClamped(0, 0.65, smoothProgress.value)
+  const a = lerp(0.58, 0.0, easeInOutSine(t))
   const bg = `radial-gradient(60vw 85vh at 10% 50%, rgba(0,0,0,${a}) 0%, rgba(0,0,0,0) 60%)`
   return { background: bg }
 })
 
 // util
 const clampRem = (minRem: number, maxRem: number) => `clamp(${minRem}rem, 6vw, ${maxRem}rem)`
+
+// ===== NAV ITEMS + REVEAL BLUR->NÍTIDO (STAGGER) =====
+const navItems = [
+  { label: 'Serviços',      href: '#servicos' },
+  { label: 'Como funciona', href: '#jornada' },
+  { label: 'O que dizem',   href: '#depoimentos' },
+  { label: 'Contato',       href: '#contato' }
+]
+
+// janela de transição dos links
+const LINKS_START = 0.18
+const LINKS_END   = 0.42
+const LINKS_STAGGER = 0.045
+
+const linkRevealStyle = (i: number) => {
+  if (prefersReduced) return { opacity: '1' }
+  const s = LINKS_START + i * LINKS_STAGGER
+  const e = LINKS_END   + i * LINKS_STAGGER
+  const t0 = remapClamped(s, e, smoothProgress.value)
+  const t  = easeInOutCubic(t0)
+  const blurPx = lerp(8, 0, t)
+  const op     = lerp(0, 1, t)
+  const ty     = lerp(6, 0, t)
+  return {
+    filter: `blur(${blurPx.toFixed(2)}px)`,
+    opacity: op.toFixed(3),
+    transform: `translate3d(0, ${ty.toFixed(2)}px, 0)`,
+    transition: 'filter 260ms ease, opacity 240ms linear, transform 260ms ease',
+    willChange: 'filter, opacity, transform'
+  }
+}
+
+// Marca (logo) também sai do blur
+const BRAND_START = 0.16
+const BRAND_END   = 0.32
+const brandRevealStyle = computed(() => {
+  if (prefersReduced) return {}
+  const t0 = remapClamped(BRAND_START, BRAND_END, smoothProgress.value)
+  const t  = easeInOutCubic(t0)
+  const blurPx = lerp(10, 0, t)
+  const op     = lerp(0, 1, t)
+  const ty     = lerp(8, 0, t)
+  return {
+    filter: `blur(${blurPx.toFixed(2)}px)`,
+    opacity: op.toFixed(3),
+    transform: `translate3d(0, ${ty.toFixed(2)}px, 0)`,
+    transition: 'filter 300ms ease, opacity 240ms linear, transform 300ms ease',
+    willChange: 'filter, opacity, transform'
+  }
+})
+
+/* ===== ALINHAMENTO CORRIGIDO ===== */
+const alignTextClass = computed(() =>
+  props.alinhamento === 'centro' ? 'text-center' : 'text-left'
+)
+const subBlockClass = computed(() =>
+  props.alinhamento === 'centro' ? 'mx-auto' : ''
+)
+const ctaJustifyClass = computed(() =>
+  props.alinhamento === 'centro' ? 'justify-center' : 'justify-start'
+)
 </script>
