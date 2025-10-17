@@ -8,6 +8,7 @@ import Layout from '../layouts/Layout.astro'
 import Preloader from '../components/Preloader.vue'
 import HeroScroll from '../components/HeroScroll.vue'
 import capa from '../assets/hero/capa.webp?url'
+import ServicesSection from '../components/ServicesSection.vue'
 ---
 
 <Layout title="Direção criativa — branding, identidade e conteúdo">
@@ -21,4 +22,5 @@ import capa from '../assets/hero/capa.webp?url'
   overlay={82}
   client:visible
 />
+  <ServicesSection client:visible />
 </Layout>
