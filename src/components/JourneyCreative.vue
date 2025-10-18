@@ -33,7 +33,7 @@
           </div>
         </div>
 
-        <!-- Depoimento (papel mais sutil) + CTA -->
+        <!-- Depoimento + CTA (WhatsApp) -->
         <div class="md:col-span-5">
           <figure class="quote-paper self-start">
             <blockquote class="quote-text">
@@ -45,6 +45,7 @@
                 src="/images/thalopes.webp"
                 alt="Tha Lopes"
                 class="h-12 w-12 rounded-full object-cover ring-1 ring-white/70"
+                loading="lazy"
               />
               <div>
                 <p class="font-semibold text-[#2B353B]">/ Tha Lopes</p>
@@ -53,13 +54,19 @@
             </figcaption>
           </figure>
 
-          <button class="btn-terracotta mt-8">
+          <!-- CTA WhatsApp (alinhado à esquerda, como estava) -->
+          <a
+            href="https://wa.me/5511976990921?text=Oi%2C%20vim%20pelo%20site%20e%20gostaria%20de%20agendar%20uma%20conversa."
+            target="_blank" rel="noopener"
+            class="btn-terracotta inline-flex items-center gap-2 mt-8"
+            aria-label="Agendar conversa pelo WhatsApp"
+          >
             Agendar conversa
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
                  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M7 17L17 7M7 7h10v10"/>
             </svg>
-          </button>
+          </a>
         </div>
       </div>
     </div>
@@ -77,9 +84,9 @@
 
   /* Variáveis de linhas (cards x depoimento) */
   --rule-gap-cards: 18px;
-  --rule-color-cards: rgba(35,48,55,.09);    /* ↓ mais sutil que antes (.12) */
+  --rule-color-cards: rgba(35,48,55,.09);   /* sutil, porém perceptível */
   --rule-gap-quote: 22px;
-  --rule-color-quote: rgba(35,48,55,.06);    /* depoimento ainda mais suave  */
+  --rule-color-quote: rgba(35,48,55,.06);   /* depoimento mais suave     */
 }
 .beige-bg::before{
   content:""; position:fixed; inset:0; pointer-events:none; opacity:.05;
@@ -89,7 +96,7 @@
   mix-blend-mode:multiply;
 }
 
-/* ---------- Cards (papel de caderno – sem pauta vertical) ---------- */
+/* ---------- Cards (papel de caderno) ---------- */
 .card-paper{
   position:relative; overflow:hidden;
   display:flex; align-items:center; gap:1rem;
@@ -99,13 +106,11 @@
   border:1px solid #D9CEC2;
   box-shadow: 0 8px 20px -14px rgba(39,40,41,.16), inset 0 1px 0 rgba(255,255,255,.35);
 }
-/* linhas horizontais sutis */
 .card-paper::before{
   content:""; position:absolute; inset:0; z-index:0; pointer-events:none;
   background-image:
     repeating-linear-gradient(0deg, var(--rule-color-cards) 0 1px, transparent 1px var(--rule-gap-cards));
 }
-/* conteúdo acima das linhas */
 .card-paper > *{ position:relative; z-index:1; }
 
 .item{ font-size:1.125rem; }
@@ -117,7 +122,7 @@
   font-weight:700; font-size:.9rem; letter-spacing:.02em;
 }
 
-/* ---------- Depoimento (mesmo papel, ainda mais sutil) ---------- */
+/* ---------- Depoimento ---------- */
 .quote-paper{
   position:relative; overflow:hidden;
   background:#F6F1EA;
@@ -126,13 +131,11 @@
   box-shadow: 0 8px 20px -14px rgba(39,40,41,.16), inset 0 1px 0 rgba(255,255,255,.35);
   padding:1.5rem;
 }
-/* linhas do depoimento (um nível abaixo dos cards) */
 .quote-paper::before{
   content:""; position:absolute; inset:0; z-index:0; pointer-events:none;
   background-image:
     repeating-linear-gradient(0deg, var(--rule-color-quote) 0 1px, transparent 1px var(--rule-gap-quote));
 }
-/* zera margens do blockquote para alinhar perfeito */
 .quote-text{ margin:0; }
 
 /* ---------- CTA ---------- */
