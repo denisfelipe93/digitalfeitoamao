@@ -1,93 +1,60 @@
 <template>
-  <section class="relative isolate bg-black text-white py-24 overflow-hidden">
-    <!-- mesh/brush de fundo (bem sutil, orgânico) -->
-    <div aria-hidden="true" class="pointer-events-none absolute inset-0">
-      <div class="absolute -left-24 top-1/4 h-72 w-72 rounded-full bg-pink-400/10 blur-3xl"></div>
-      <div class="absolute right-[-8%] top-[55%] h-96 w-96 rounded-full bg-lime-400/10 blur-[90px]"></div>
-    </div>
-
-    <div class="relative mx-auto w-full max-w-6xl px-6">
-      <!-- Título com gradiente + sublinhado “manual” -->
-      <h2 class="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight">
-        <span class="block bg-gradient-to-br from-white to-slate-300 bg-clip-text text-transparent">
-          Nós entregamos valores,
-        </span>
+  <section class="beige-bg py-24 text-[#233037]">
+    <div class="mx-auto w-full max-w-6xl px-6">
+      <!-- Título -->
+      <h2 class="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight text-[#233037]">
+        <span class="block">Nós entregamos valores,</span>
         <span class="block">dedicação e qualidade.</span>
-
         <span class="relative mt-3 inline-block">
-          <span class="block text-slate-400 font-semibold">— não quantidade.</span>
-          <!-- traço orgânico -->
-          <svg class="absolute -bottom-2 left-0 w-[340px] opacity-80"
-               viewBox="0 0 340 18" fill="none">
-            <path d="M2 14 C100 0, 240 26, 338 10"
-                  stroke="#B3F31B" stroke-width="4" stroke-linecap="round"
-                  class="hand-stroke"/>
+          <span class="block font-semibold text-[#5C6972]">— não quantidade.</span>
+          <svg class="absolute -bottom-2 left-0 w-[340px] opacity-80" viewBox="0 0 340 18" fill="none">
+            <path d="M2 14 C100 0, 240 26, 338 10" stroke="#CC7E6B" stroke-width="6" stroke-linecap="round"/>
           </svg>
         </span>
       </h2>
 
       <!-- Conteúdo -->
-      <div class="mt-14 grid gap-12 md:grid-cols-12 items-start">
-        <!-- LEFT: Stepper “sticker” criativo -->
-        <div class="md:col-span-7">
-          <ol class="relative pl-10 space-y-3">
-            <!-- trilho pontilhado -->
-            <span aria-hidden="true"
-                  class="absolute left-4 top-2 bottom-2 border-l border-dashed border-white/20"></span>
+      <div class="mt-14 grid gap-10 md:grid-cols-12 items-start">
+        <!-- Cards (3x com “papel de caderno”, sem pauta vertical) -->
+        <div class="md:col-span-7 space-y-4">
+          <div class="card-paper">
+            <span class="chip bg-[#E3D8CB] text-[#6B5E52]">01</span>
+            <p class="item text-[#2F3A40]">Briefing</p>
+          </div>
 
-            <!-- ITEM -->
-            <li class="relative">
-              <!-- dot gradient -->
-              <span class="dot"></span>
-              <div class="card">
-                <span class="etapa">01</span>
-                <p class="item">Briefing</p>
-              </div>
-            </li>
+          <div class="card-paper">
+            <span class="chip bg-[#D9CED4] text-[#574E53]">02</span>
+            <p class="item text-[#2F3A40]">Abordando o escopo e definindo estratégias</p>
+          </div>
 
-            <li class="relative">
-              <span class="dot"></span>
-              <div class="card">
-                <span class="etapa">02</span>
-                <p class="item">Abordando o escopo e definindo estratégias</p>
-              </div>
-            </li>
-
-            <li class="relative">
-              <span class="dot"></span>
-              <div class="card">
-                <span class="etapa">03</span>
-                <p class="item">Entrega do seu projeto com carinho</p>
-              </div>
-            </li>
-          </ol>
+          <div class="card-paper">
+            <span class="chip bg-[#E6CEC5] text-[#5A4942]">03</span>
+            <p class="item text-[#2F3A40]">Entrega do seu projeto com carinho</p>
+          </div>
         </div>
 
-        <!-- RIGHT: Depoimento “editorial” + CTA -->
+        <!-- Depoimento (papel mais sutil) + CTA -->
         <div class="md:col-span-5">
-          <figure class="quote">
-            <div class="quote-bar" aria-hidden="true"></div>
-            <blockquote class="text-slate-100/95 text-lg leading-relaxed italic">
+          <figure class="quote-paper self-start">
+            <blockquote class="quote-text">
               Você viverá cada etapa do processo de nosso trabalho, desde o clique da
               câmera, os risos, até o trabalho final.
             </blockquote>
-
             <figcaption class="mt-6 flex items-center gap-4">
               <img
                 src="/images/thalopes.webp"
                 alt="Tha Lopes"
-                class="h-12 w-12 rounded-full object-cover ring-2 ring-white/10"
-                loading="lazy"
+                class="h-12 w-12 rounded-full object-cover ring-1 ring-white/70"
               />
               <div>
-                <p class="font-semibold">/ Tha Lopes</p>
-                <p class="text-slate-500 text-sm">CEO &amp; Founder @thalopesqueiroz</p>
+                <p class="font-semibold text-[#2B353B]">/ Tha Lopes</p>
+                <p class="text-sm text-[#6B7780]">CEO &amp; Founder @thalopesqueiroz</p>
               </div>
             </figcaption>
           </figure>
 
-          <button class="cta mt-8">
-            <span>Agendar conversa</span>
+          <button class="btn-terracotta mt-8">
+            Agendar conversa
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
                  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M7 17L17 7M7 7h10v10"/>
@@ -100,73 +67,81 @@
 </template>
 
 <script setup>
-// componente estático
+// estático :)
 </script>
 
 <style scoped>
-/* ——— micro animações e texturas ——— */
-@keyframes shimmer { from {opacity:.65} to {opacity:1} }
-.hand-stroke { filter: drop-shadow(0 6px 24px rgba(179,243,27,.25)); }
+/* ---------- Fundo bege + textura geral ---------- */
+.beige-bg{
+  background: linear-gradient(180deg,#CBBDAF 0%, #C3B5A5 46%, #BFB2A3 100%);
 
-/* timeline dots */
-.dot{
-  position:absolute; left:0.875rem; top:1.05rem;
-  width:14px; height:14px; border-radius:9999px;
-  background: radial-gradient(circle at 35% 35%, #ECFEB0 0%, #B3F31B 55%, #7BD300 100%);
-  box-shadow: 0 10px 22px -10px rgba(179,243,27,.55);
+  /* Variáveis de linhas (cards x depoimento) */
+  --rule-gap-cards: 18px;
+  --rule-color-cards: rgba(35,48,55,.09);    /* ↓ mais sutil que antes (.12) */
+  --rule-gap-quote: 22px;
+  --rule-color-quote: rgba(35,48,55,.06);    /* depoimento ainda mais suave  */
+}
+.beige-bg::before{
+  content:""; position:fixed; inset:0; pointer-events:none; opacity:.05;
+  background-image:
+    repeating-linear-gradient(0deg,rgba(0,0,0,.05) 0,rgba(0,0,0,.05) 1px,transparent 1px,transparent 3px),
+    repeating-linear-gradient(90deg,rgba(0,0,0,.035) 0,rgba(0,0,0,.035) 1px,transparent 1px,transparent 4px);
+  mix-blend-mode:multiply;
 }
 
-/* cards: vidro + papel (sem data-uri) */
-.card{
+/* ---------- Cards (papel de caderno – sem pauta vertical) ---------- */
+.card-paper{
+  position:relative; overflow:hidden;
   display:flex; align-items:center; gap:1rem;
   padding:1rem 1.25rem;
-  background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
-  border:1px solid rgba(255,255,255,.08);
-  border-radius: .85rem; /* toque mais orgânico */
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
-  /* textura leve sem SVG inline */
+  border-radius: 18px;
+  background:#F6F1EA;
+  border:1px solid #D9CEC2;
+  box-shadow: 0 8px 20px -14px rgba(39,40,41,.16), inset 0 1px 0 rgba(255,255,255,.35);
+}
+/* linhas horizontais sutis */
+.card-paper::before{
+  content:""; position:absolute; inset:0; z-index:0; pointer-events:none;
   background-image:
-    repeating-linear-gradient(0deg, rgba(255,255,255,.03) 0, rgba(255,255,255,.03) 1px, transparent 1px, transparent 3px),
-    linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
-  transition: transform .25s ease, border-color .25s ease, background .25s ease;
+    repeating-linear-gradient(0deg, var(--rule-color-cards) 0 1px, transparent 1px var(--rule-gap-cards));
 }
-.card:hover{
-  transform: translateY(-2px);
-  border-color: rgba(255,255,255,.14);
-}
+/* conteúdo acima das linhas */
+.card-paper > *{ position:relative; z-index:1; }
 
-/* tipografia dos itens */
-.etapa{ width:2.25rem; color:#8A97A7; font-weight:600; font-size:.9rem; letter-spacing:.02em; }
 .item{ font-size:1.125rem; }
 
-/* quote “editorial” */
-.quote{
-  position:relative;
-  padding:1.75rem;
-  background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.03));
-  border:1px solid rgba(255,255,255,.10);
-  border-radius: 1rem;
-  box-shadow: 0 20px 60px -20px rgba(0,0,0,.45);
-}
-.quote-bar{
-  position:absolute; left:0; top:0; height:100%; width:4px;
-  background: linear-gradient(180deg, #B3F31B, #7BD300);
-  border-radius: 9999px;
-  animation: shimmer 1.8s ease-in-out infinite alternate;
+/* Chips */
+.chip{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:2.5rem; height:2rem; border-radius:.75rem;
+  font-weight:700; font-size:.9rem; letter-spacing:.02em;
 }
 
-/* CTA com borda gradiente e glow */
-.cta{
+/* ---------- Depoimento (mesmo papel, ainda mais sutil) ---------- */
+.quote-paper{
+  position:relative; overflow:hidden;
+  background:#F6F1EA;
+  border:1px solid #D9CEC2;
+  border-radius:18px;
+  box-shadow: 0 8px 20px -14px rgba(39,40,41,.16), inset 0 1px 0 rgba(255,255,255,.35);
+  padding:1.5rem;
+}
+/* linhas do depoimento (um nível abaixo dos cards) */
+.quote-paper::before{
+  content:""; position:absolute; inset:0; z-index:0; pointer-events:none;
+  background-image:
+    repeating-linear-gradient(0deg, var(--rule-color-quote) 0 1px, transparent 1px var(--rule-gap-quote));
+}
+/* zera margens do blockquote para alinhar perfeito */
+.quote-text{ margin:0; }
+
+/* ---------- CTA ---------- */
+.btn-terracotta{
   display:inline-flex; align-items:center; gap:.5rem;
-  padding:.85rem 1.25rem; border-radius:9999px;
-  color:#0A0A0A; font-weight:600;
-  background: linear-gradient(#C8FF4D, #A9F313);
-  box-shadow: 0 14px 38px -16px rgba(179,243,27,.6);
-  transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+  padding:.9rem 1.25rem; border-radius:9999px;
+  background:#CC7E6B; color:#FFF;
+  font-weight:700; border:1px solid rgba(39,40,41,.12);
+  transition: transform .15s ease, filter .15s ease;
 }
-.cta:hover{
-  transform: translateY(-1px);
-  box-shadow: 0 18px 46px -16px rgba(179,243,27,.75);
-  filter: brightness(1.02);
-}
+.btn-terracotta:hover{ transform: translateY(-1px); filter: brightness(1.03); }
 </style>
