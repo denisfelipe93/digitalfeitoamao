@@ -1,20 +1,20 @@
 <template>
   <section class="beige-bg py-24 text-[#233037]">
     <div class="mx-auto w-full max-w-6xl px-6">
-      <!-- Título -->
-      <h2 class="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight text-[#233037]">
+      <!-- Título responsivo -->
+      <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight tracking-tight text-[#233037]">
         <span class="block">Nós entregamos valores,</span>
         <span class="block">dedicação e qualidade.</span>
         <span class="relative mt-3 inline-block">
-          <span class="block font-semibold text-[#5C6972]">— não quantidade.</span>
-          <svg class="absolute -bottom-2 left-0 w-[340px] opacity-80" viewBox="0 0 340 18" fill="none">
+          <span class="block font-semibold text-[#495059]">— não quantidade.</span>
+          <svg class="absolute -bottom-2 left-0 w-[300px] sm:w-[340px] opacity-80" viewBox="0 0 340 18" fill="none">
             <path d="M2 14 C100 0, 240 26, 338 10" stroke="#CC7E6B" stroke-width="6" stroke-linecap="round"/>
           </svg>
         </span>
       </h2>
 
       <!-- Conteúdo -->
-      <div class="mt-14 grid gap-10 md:grid-cols-12 items-start">
+      <div class="mt-12 sm:mt-14 grid gap-8 sm:gap-10 md:grid-cols-12 items-start">
         <!-- Cards (3x com “papel de caderno”, sem pauta vertical) -->
         <div class="md:col-span-7 space-y-4">
           <div class="card-paper">
@@ -33,33 +33,35 @@
           </div>
         </div>
 
-        <!-- Depoimento + CTA (WhatsApp) -->
+        <!-- Depoimento + CTA (WhatsApp, acessível) -->
         <div class="md:col-span-5">
           <figure class="quote-paper self-start">
-            <blockquote class="quote-text">
+            <blockquote class="quote-text text-[#445059]">
               Você viverá cada etapa do processo de nosso trabalho, desde o clique da
               câmera, os risos, até o trabalho final.
             </blockquote>
             <figcaption class="mt-6 flex items-center gap-4">
               <img
                 src="/images/thalopes.webp"
+                srcset="/images/thalopes.webp 1x, /images/thalopes.webp 2x"
+                sizes="(min-width: 768px) 48px, 40px"
                 alt="Tha Lopes"
                 class="h-12 w-12 rounded-full object-cover ring-1 ring-white/70"
                 loading="lazy"
               />
               <div>
                 <p class="font-semibold text-[#2B353B]">/ Tha Lopes</p>
-                <p class="text-sm text-[#6B7780]">CEO &amp; Founder @thalopesqueiroz</p>
+                <p class="text-sm text-[#5C6A72]">CEO &amp; Founder @thalopesqueiroz</p>
               </div>
             </figcaption>
           </figure>
 
-          <!-- CTA WhatsApp (alinhado à esquerda, como estava) -->
+          <!-- CTA WhatsApp com aria-label -->
           <a
             href="https://wa.me/5511976990921?text=Oi%2C%20vim%20pelo%20site%20e%20gostaria%20de%20agendar%20uma%20conversa."
             target="_blank" rel="noopener"
             class="btn-terracotta inline-flex items-center gap-2 mt-8"
-            aria-label="Agendar conversa pelo WhatsApp"
+            aria-label="Agendar conversa com Tha Lopes pelo WhatsApp"
           >
             Agendar conversa
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
@@ -84,9 +86,9 @@
 
   /* Variáveis de linhas (cards x depoimento) */
   --rule-gap-cards: 18px;
-  --rule-color-cards: rgba(35,48,55,.09);   /* sutil, porém perceptível */
+  --rule-color-cards: rgba(35,48,55,.09);
   --rule-gap-quote: 22px;
-  --rule-color-quote: rgba(35,48,55,.06);   /* depoimento mais suave     */
+  --rule-color-quote: rgba(35,48,55,.06);
 }
 .beige-bg::before{
   content:""; position:fixed; inset:0; pointer-events:none; opacity:.05;
@@ -147,4 +149,9 @@
   transition: transform .15s ease, filter .15s ease;
 }
 .btn-terracotta:hover{ transform: translateY(-1px); filter: brightness(1.03); }
+
+/* ---------- Acessibilidade: reduzir animações ---------- */
+@media (prefers-reduced-motion: reduce){
+  .btn-terracotta, .card-paper { transition: none; }
+}
 </style>
