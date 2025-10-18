@@ -1,0 +1,22 @@
+---
+import ServicesSection from "@/components/ServicesSection.vue";
+import { services } from "@/data/services";
+import { buildServicesItemList } from "@/lib/seo/jsonld";
+
+const jsonLd = buildServicesItemList(services);
+---
+
+<html lang="pt-br">
+  <head>
+    <title>Serviços — Digital Feito à Mão</title>
+    <script type="application/ld+json">
+      {JSON.stringify(jsonLd)}
+    </script>
+  </head>
+  <body>
+    <main>
+      {/* Hidrate a ilha só quando visível */}
+      <ServicesSection client:visible contactHref="#contato" />
+    </main>
+  </body>
+</html>
