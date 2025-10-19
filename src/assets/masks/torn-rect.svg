@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" preserveAspectRatio="none">
+  <defs>
+    <!-- base branca -->
+    <clipPath id="clip">
+      <rect width="800" height="600" rx="14" ry="14"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#clip)">
+    <rect width="800" height="600" fill="#ffffff"/>
+    <!-- rasgo superior (recorta) -->
+    <path d="M0 42 C120 62 170 12 270 32 370 52 430 2 530 22 630 42 680 12 800 32 L800 0 0 0 Z"
+          fill="#E8EFF0"/>
+    <!-- rasgo inferior (recorta) -->
+    <path d="M0 600 L0 560 C120 540 170 590 270 570 370 550 430 600 530 580 630 560 680 590 800 570 L800 600 Z"
+          fill="#E8EFF0"/>
+  </g>
+</svg>

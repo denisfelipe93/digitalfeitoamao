@@ -9,22 +9,24 @@ import Preloader from '../components/Preloader.vue'
 import HeroScroll from '../components/HeroScroll.vue'
 import capa from '../assets/hero/capa.webp?url'
 import ServicesSection from '../components/ServicesSection.vue'
-//import Journey from '@/components/Journey.vue'
 import JourneyCreative from '@/components/JourneyCreative.vue'
+import Testimonials from '@/components/Testimonials.vue'
 ---
 
 <Layout title="Direção criativa — branding, identidade e conteúdo">
   <Preloader client:load />
 
- <HeroScroll
-  titulo="digital feito a mão"
-  imageSrc={capa}
-  imageAlt="Equipe de filmagem em jardim durante uma produção"
-  imageSrcset={{ webp: capa }}
-  overlay={82}
-  client:visible
-/>
+  <HeroScroll
+    titulo="digital feito a mão"
+    imageSrc={capa}
+    imageAlt="Equipe de filmagem em jardim durante uma produção"
+    imageSrcset={{ webp: capa }}
+    overlay={82}
+    client:visible
+  />
+
   <ServicesSection client:visible />
-  <!-- <Journey client:visible /> -->
   <JourneyCreative client:visible />
+
+  <Testimonials client:visible />
 </Layout>
