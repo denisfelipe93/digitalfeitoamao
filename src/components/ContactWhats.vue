@@ -1,78 +1,85 @@
 <!-- src/components/ContactSection.vue -->
 <template>
   <section id="contact" class="bg-white">
-    <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
-      <!-- Top: headline + CTA principal -->
-      <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight tracking-tight text-neutral-900">
-          Formulários são chatos e a gente sabe!
-        </h2>
-
-        <!-- CTA Whats – protagonista e alinhado -->
-        <a
-          :href="whatsLink"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex items-center justify-center gap-2 rounded-full px-5 py-3.5 text-base font-semibold
-                 bg-neutral-900 text-white shadow-sm hover:bg-neutral-800 focus:outline-none
-                 focus-visible:ring-2 focus-visible:ring-neutral-900/30 transition"
-          aria-label="Chamar no WhatsApp"
-        >
-          <span class="h-5 w-5" v-html="icons.whatsapp" aria-hidden="true" />
-          Chamar no Whats
-        </a>
-      </div>
+    <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+      <!-- Título -->
+      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight tracking-tight text-neutral-900">
+        Formulários são chatos e a gente sabe!
+      </h2>
 
       <!-- Card -->
       <div
-        class="relative mt-10 rounded-2xl border border-neutral-200 bg-white p-6 sm:p-8
+        class="mt-10 rounded-2xl border border-neutral-200 bg-white p-6 sm:p-8
                shadow-[0_1px_0_#0000000d,0_1px_3px_#0000000a]
                transition-transform motion-safe:hover:-translate-y-px"
       >
-        <!-- conteúdo principal -->
-        <div class="grid gap-8 md:grid-cols-2">
-          <!-- Bloco texto -->
-          <div class="space-y-2">
+        <!-- GRID
+             col1 = conteúdo; col2 = CTA
+             row1 = conteúdo; row2 = redes
+             CTA ocupa col2 + row-span-2 para centralizar no card inteiro -->
+        <div class="grid gap-8 md:grid-cols-[1fr_auto] md:grid-rows-[auto_auto]">
+          <!-- Conteúdo (col1,row1) -->
+          <div class="space-y-3">
             <p class="text-sm font-semibold text-neutral-700">Prefere outra forma?</p>
 
             <a
-              class="group inline-flex items-center gap-3 rounded-lg px-2 py-1.5 text-neutral-800 hover:bg-neutral-50
-                     focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/20 transition"
               :href="`mailto:${email}`"
+              class="inline-flex items-center gap-3 rounded-lg px-2 py-1.5 text-neutral-900 hover:bg-neutral-50
+                     focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/20 transition"
               aria-label="Enviar um e-mail"
             >
               <span class="opacity-70" v-html="icons.mail" aria-hidden="true" />
               <span class="font-semibold tracking-tight">{{ email }}</span>
             </a>
 
-            <p class="text-sm text-neutral-500">
-              Resposta rápida em horário comercial. Se for urgente, toque no Whats 😉
-            </p>
+            <p class="text-sm text-neutral-500">Resposta rápida em horário comercial.</p>
           </div>
 
-          <!-- Espaço de respiro (evita que nada "flutue") -->
-          <div class="min-h-[96px] md:min-h-[120px]"></div>
-        </div>
+          <!-- CTA (col2, row 1-2) -->
+          <div class="md:row-span-2 md:self-center md:justify-self-end">
+            <a
+              :href="whatsLink"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Chat via WhatsApp"
+              class="group inline-flex items-center gap-3 rounded-full px-7 py-3.5
+                     text-base font-semibold tracking-tight text-white
+                     bg-neutral-900 ring-1 ring-black/10
+                     shadow-[0_8px_18px_rgba(0,0,0,0.18)]
+                     transition
+                     hover:bg-neutral-800 motion-safe:hover:-translate-y-0.5
+                     focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/40"
+            >
+              <span>Chat via WhatsApp</span>
+              <!-- setinha ↗ -->
+              <svg
+                viewBox="0 0 24 24" aria-hidden="true"
+                class="h-4 w-4 -translate-y-px transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+              >
+                <path d="M7 17L17 7" />
+                <path d="M9 7h8v8" />
+              </svg>
+            </a>
+          </div>
 
-        <!-- divisor sutil -->
-        <div class="my-6 h-px bg-gradient-to-r from-transparent via-neutral-200 to-transparent"></div>
-
-        <!-- Rodapé do card: redes alinhadas no canto inferior esquerdo -->
-        <div class="flex items-center gap-3">
-          <a
-            v-for="s in socials"
-            :key="s.name"
-            :href="s.href"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-neutral-200
-                   text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 focus:outline-none
-                   focus-visible:ring-2 focus-visible:ring-neutral-900/20 transition"
-            :aria-label="s.aria"
-            title=""
-          >
-            <span v-html="s.icon" aria-hidden="true" class="h-5 w-5"></span>
-          </a>
+          <!-- Redes (col1,row2) -->
+          <div class="mt-2 flex items-center gap-3">
+            <a
+              v-for="s in socials"
+              :key="s.name"
+              :href="s.href"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-neutral-200
+                     text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 focus:outline-none
+                     focus-visible:ring-2 focus-visible:ring-neutral-900/20 transition"
+              :aria-label="s.aria"
+              :title="s.name"
+            >
+              <span v-html="s.icon" aria-hidden="true" class="h-5 w-5"></span>
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -82,7 +89,7 @@
 <script setup lang="ts">
 const props = withDefaults(
   defineProps<{
-    whatsappNumber?: string;   // E.164 ex: +5511976990921
+    whatsappNumber?: string;   // E.164 ex.: +5511976990921
     email?: string;
     instagram?: string;
     x?: string;
@@ -100,10 +107,8 @@ const props = withDefaults(
 const whatsLink = `https://wa.me/${props.whatsappNumber.replace(/\D/g, '')}`;
 const email = props.email;
 
-// ícones inline (sem libs externas)
+// Ícones inline
 const icons = {
-  whatsapp:
-    '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 3.9A10 10 0 0 0 3.9 20L3 23l3-.9A10 10 0 1 0 20 3.9Zm-7.9 3.7c.2 0 .4 0 .6.5.2.5.8 1.7.8 1.8 0 .2.1.4-.1.6s-.3.5-.5.7c-.2.2-.4.4-.2.7.2.2.9 1.5 2.2 2.1 1.6.8 1.6.5 1.9.3.3-.1.9-.4 1.1-.3.3.1.6.3.7.5.1.2.1 1 .2 1.2.1.2 0 .5-.2.7-.2.2-.7.7-1.7.7s-2-.6-2.3-.7c-.3-.1-1.5-.7-2.6-1.8-1-.9-1.8-2.2-2-2.6-.2-.4-.5-1.4-.6-1.9-.1-.5 0-.9.2-1.2.2-.3.5-.7.8-.8.3-.1.5-.1.6-.1Z"/></svg>',
   mail:
     '<svg viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5L4 8V6l8 5 8-5v2Z"/></svg>',
   instagram:
