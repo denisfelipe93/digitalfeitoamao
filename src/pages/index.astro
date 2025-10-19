@@ -1,8 +1,12 @@
 ---
 /* Página inicial:
    - Usa o Layout base
-   - Renderiza a ilha de loading (Preloader.vue)
-   - Renderiza o Hero (Vue) com imagem estática
+   - Preloader (ilha Vue)
+   - Hero com imagem estática
+   - ServicesSection
+   - JourneyCreative
+   - Testimonials
+   - Contact (Whats)
 */
 import Layout from '../layouts/Layout.astro'
 import Preloader from '../components/Preloader.vue'
@@ -11,6 +15,7 @@ import capa from '../assets/hero/capa.webp?url'
 import ServicesSection from '../components/ServicesSection.vue'
 import JourneyCreative from '@/components/JourneyCreative.vue'
 import Testimonials from '@/components/Testimonials.vue'
+import ContactWhats from '@/components/ContactWhats.vue'
 ---
 
 <Layout title="Direção criativa — branding, identidade e conteúdo">
@@ -27,6 +32,6 @@ import Testimonials from '@/components/Testimonials.vue'
 
   <ServicesSection client:visible />
   <JourneyCreative client:visible />
-
   <Testimonials client:visible />
+  <ContactWhats client:visible/>
 </Layout>
