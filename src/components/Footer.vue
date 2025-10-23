@@ -50,7 +50,7 @@ const waLink = computed(() => {
 
 const letters = computed(() => props.hoverText.split(''));
 
-/* animação de entrada */
+/* animação 1x por reload */
 const titleEl = ref<HTMLElement | null>(null);
 const navDetails = ref<HTMLDetailsElement[]>([]);
 const setNavDetail: VNodeRef = (el) => {
@@ -78,7 +78,6 @@ onMounted(() => {
     io.observe(titleEl.value);
   }
 
-  // abrir automaticamente no desktop
   const mq = window.matchMedia('(min-width: 768px)');
   const openForDesktop = () => { if (mq.matches) navDetails.value.forEach(d => d.open = true); };
   openForDesktop();
@@ -87,7 +86,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <footer class="relative border-t border-zinc-800 bg-black text-zinc-100">
+  <footer class="relative border-t border-zinc-800 bg-black text-zinc-100 overflow-x-hidden">
     <div class="pointer-events-none absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-zinc-700/70 to-transparent"></div>
 
     <div class="mx-auto max-w-7xl px-6 lg:px-8">
@@ -103,27 +102,32 @@ onMounted(() => {
 
       <div class="h-px w-full bg-zinc-800"></div>
 
-      <!-- conteúdo -->
-      <div class="py-14 lg:py-20 flex flex-col gap-12 md:flex-row md:items-start md:justify-between">
-        <!-- esquerda -->
-        <div class="max-w-md md:basis-[360px] md:shrink-0">
-          <div class="inline-flex items-center gap-3">
+      <!-- conteúdo: grid estável (md: 1 fixa + área) -->
+      <div class="py-14 lg:py-20 grid gap-12 md:grid-cols-4 md:items-start">
+        <!-- ESQUERDA -->
+        <div class="max-w-md md:col-span-1 md:basis-[320px] md:shrink-0">
+          <!-- marca: sem quebra em sm+ -->
+          <div class="flex flex-col sm:flex-row sm:items-center sm:gap-3 md:flex-nowrap md:whitespace-nowrap">
             <span class="rounded-xl border border-zinc-700 bg-black/80 px-3 py-1.5 text-sm font-bold tracking-tight text-zinc-100 shadow-md backdrop-blur-sm">dfm</span>
-            <span class="text-lg sm:text-xl font-medium leading-none text-white/90">{{ brandTagline }}</span>
+            <span class="mt-2 sm:mt-0 text-lg sm:text-xl font-medium leading-none text-white/90">
+              {{ brandTagline }}
+            </span>
           </div>
+
+          <!-- botão: nunca quebra -->
           <div class="mt-6">
             <a :href="waLink" target="_blank" rel="noopener noreferrer"
-               class="inline-flex items-center justify-center rounded-2xl border border-zinc-700 bg-gradient-to-b from-zinc-900 to-zinc-950 px-5 py-2.5 text-sm font-medium text-zinc-100 shadow-md transition hover:translate-y-[-2px] hover:shadow-lg hover:border-zinc-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-600">
+               class="inline-flex items-center justify-center rounded-2xl border border-zinc-700 bg-gradient-to-b from-zinc-900 to-zinc-950 px-4 sm:px-5 py-2.5 text-[13px] sm:text-sm font-medium text-zinc-100 shadow-md transition whitespace-nowrap leading-none select-none hover:translate-y-[-2px] hover:shadow-lg hover:border-zinc-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-600">
               Chat via WhatsApp
             </a>
           </div>
         </div>
 
-        <!-- direita -->
-        <div class="w-full md:max-w-5xl md:ml-10">
-          <div class="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 md:text-right">
+        <!-- DIREITA (1→2→3 colunas) -->
+        <div class="w-full md:col-span-3">
+          <div class="grid gap-x-12 gap-y-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 md:text-right">
             <!-- Navegar -->
-            <details class="footer-acc" open :ref="setNavDetail">
+            <details class="footer-acc min-w-0 lg:min-w-[220px]" open :ref="setNavDetail">
               <summary class="footer-acc__summary">Navegar</summary>
               <ul class="footer-acc__content space-y-2">
                 <li v-for="(item, i) in navPrimary" :key="i">
@@ -133,7 +137,7 @@ onMounted(() => {
             </details>
 
             <!-- Informacional -->
-            <details class="footer-acc" :ref="setNavDetail">
+            <details class="footer-acc min-w-0 lg:min-w-[220px]" :ref="setNavDetail">
               <summary class="footer-acc__summary">Informacional</summary>
               <ul class="footer-acc__content space-y-2">
                 <li v-for="(item, i) in infoNav" :key="i">
@@ -143,7 +147,7 @@ onMounted(() => {
             </details>
 
             <!-- Social -->
-            <details class="footer-acc" :ref="setNavDetail">
+            <details class="footer-acc min-w-0 lg:min-w-[220px]" :ref="setNavDetail">
               <summary class="footer-acc__summary">Social</summary>
               <ul class="footer-acc__content space-y-2">
                 <li v-for="(s, i) in social" :key="i">
@@ -182,30 +186,19 @@ onMounted(() => {
   60% { transform: scaleX(1); opacity: .45; }
   100% { transform: scaleX(.35); opacity: .2; }
 }
-.title-wrap.entry-play .letter {
-  animation: fallIn 520ms cubic-bezier(.33,1,.68,1) both;
-  animation-delay: calc(var(--i) * 24ms);
-}
+.title-wrap.entry-play .letter { animation: fallIn 520ms cubic-bezier(.33,1,.68,1) both; animation-delay: calc(var(--i) * 24ms); }
 .fall-shadow { opacity: 0; }
-.title-wrap.entry-play .fall-shadow {
-  animation: shadowPuff 520ms ease-out both;
-  animation-delay: calc(var(--i) * 24ms);
-  opacity: 1;
-}
+.title-wrap.entry-play .fall-shadow { animation: shadowPuff 520ms ease-out both; animation-delay: calc(var(--i) * 24ms); opacity: 1; }
 .title-wrap.entry-done .fall-shadow { animation: none; opacity: 0; }
 
-/* === hover micro === */
 @keyframes hoverPop {
   0% { transform: translateY(0) scale(1); }
-  40% { transform: translateY(-3px) scale(1.06); }
+  40% { transform: translateY(-2px) scale(1.04); }
   100% { transform: translateY(0) scale(1); }
 }
-.title-wrap:hover .letter {
-  animation: hoverPop 260ms cubic-bezier(.2,.85,.35,1) both;
-  animation-delay: calc(var(--i) * 12ms);
-}
+.title-wrap:hover .letter { animation: hoverPop 240ms cubic-bezier(.2,.85,.35,1) both; animation-delay: calc(var(--i) * 10ms); }
 
-/* === acordeões === */
+/* === acordeões (mobile) === */
 .footer-acc {
   border: 1px solid rgba(255,255,255,.08);
   border-radius: 14px;
@@ -241,16 +234,16 @@ onMounted(() => {
 .footer-acc[open] .footer-acc__summary { color: white; }
 .footer-acc__content { padding: 10px 16px 16px; border-top: 1px solid rgba(255,255,255,.08); }
 
-/* links */
+/* links (sem underline; hover vertical pra não “empurrar”) */
 .footer-link {
   display: inline-block;
   padding: 8px 4px;
   color: rgb(212 212 216);
   transition: color .18s ease, transform .18s ease;
 }
-.footer-link:hover { color: white; transform: translateX(2px); }
+.footer-link:hover { color: white; transform: translateY(-1px); }
 
-/* === desktop clean === */
+/* desktop flat */
 @media (min-width: 768px) {
   .footer-acc, .footer-acc:hover {
     border: 0 !important;
@@ -258,12 +251,7 @@ onMounted(() => {
     box-shadow: none !important;
     backdrop-filter: none !important;
   }
-  .footer-acc__summary {
-    padding: 0;
-    cursor: default;
-    color: rgb(161 161 170);
-    justify-content: flex-end;
-  }
+  .footer-acc__summary { padding: 0; cursor: default; color: rgb(161 161 170); justify-content: flex-end; }
   .footer-acc__summary::after { display: none; }
   .footer-acc__content { padding: 16px 0 0 0; border-top: 0; }
   .footer-link { display: block; text-align: right; }
