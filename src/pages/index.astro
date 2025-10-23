@@ -16,6 +16,8 @@ import ServicesSection from '../components/ServicesSection.vue'
 import JourneyCreative from '@/components/JourneyCreative.vue'
 import Testimonials from '@/components/Testimonials.vue'
 import ContactWhats from '@/components/ContactWhats.vue'
+import Footer from '@/components/Footer.vue'
+import type { loadRenderers } from 'astro:container'
 ---
 
 <Layout title="Direção criativa — branding, identidade e conteúdo">
@@ -33,5 +35,28 @@ import ContactWhats from '@/components/ContactWhats.vue'
   <ServicesSection client:visible />
   <JourneyCreative client:visible />
   <Testimonials client:visible />
-  <ContactWhats client:visible/>
+  <ContactWhats client:visible />
+
+  <!-- Footer (props em camelCase e objetos entre { } no Astro) -->
+  <Footer
+    client:visible
+    navPrimary={[
+      { label: 'Início', href: '/' },
+      { label: 'Projetos', href: '/projetos' },
+      { label: 'Serviços', href: '/servicos' },
+      { label: 'Contato', href: '/contato' },
+    ]}
+    infoNav={[
+      { label: 'Políticas', href: '/politicas' },
+      { label: 'Termos', href: '/termos' },
+    ]}
+    social={[
+      { label:'Instagram', href:'https://instagram.com/denisc0de' },
+      { label:'X (Twitter)', href:'https://x.com/DenisCode_' },
+      { label:'YouTube', href:'https://youtube.com/@odeniscode' },
+      { label:'GitHub', href:'https://github.com/denisfelipe93' },
+    ]}
+  />
+
+
 </Layout>
