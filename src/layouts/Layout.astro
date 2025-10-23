@@ -2,7 +2,7 @@
 /* Layout base do site:
    - Importa Tailwind (global.css)
    - Define <html>, <head> e <body> padrão claro
-   - Recebe props simples: title, description, ogImage
+   - Recebe props simples: title, description, ogImage, bodyClass
 */
 import '../styles/global.css';
 
@@ -43,20 +43,28 @@ const {
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
 
+    <!-- Font: Manrope -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
   </head>
 
-  <body class={`min-h-screen antialiased font-sans ${bodyClass}`}>
+  <!-- overflow-x-hidden: evita barra horizontal em casos extremos -->
+  <body class={`min-h-screen antialiased font-sans overflow-x-hidden ${bodyClass}`}>
     <!-- Link de acessibilidade -->
-    <a href="#conteudo" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:px-3 focus:py-2 focus:rounded-md focus:bg-black focus:text-white">
+    <a
+      href="#conteudo"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:px-3 focus:py-2 focus:rounded-md focus:bg-black focus:text-white"
+    >
       Pular para o conteúdo
     </a>
 
     <!-- Conteúdo da página -->
-    <main id="conteudo">
+    <!-- min-w-0: permite que grids/flex não “estourem” a largura -->
+    <main id="conteudo" class="min-w-0">
       <slot />
     </main>
   </body>

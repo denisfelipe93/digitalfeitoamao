@@ -3,6 +3,22 @@
 /* ajustes leves */
 :root { scroll-behavior: smooth; }
 html, body { min-height: 100%; }
+
+/* NOVO: mata qualquer scroll horizontal globalmente */
+html, body {
+  overflow-x: hidden;            /* anti-barrinha */
+}
+
+/* NOVO: mídia sempre responsiva */
+img, video, canvas, svg {
+  display: block;                /* evita “gaps” inline */
+  max-width: 100%;               /* nunca maior que o container */
+  height: auto;                  /* mantém proporção */
+}
+
+/* NOVO: ajuda render (especialmente em transforms e sombras grandes) */
+html { overflow-y: auto; }       /* evita composição bizarra em alguns browsers */
+
 body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 
 /* Use Manrope sem @theme (compatível c/ v3 e v4) */
@@ -15,4 +31,7 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+
+  /* NOVO: main pode encolher dentro de grids/flex (anti-overflow) */
+  main { min-width: 0; }
 }
