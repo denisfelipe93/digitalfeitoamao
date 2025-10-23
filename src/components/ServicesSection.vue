@@ -29,14 +29,15 @@ function toggleExpanded() {
 </script>
 
 <template>
-  <section id="services" class="relative bg-white scroll-mt-28">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-12 md:pt-16">
+  <!-- Removi scroll-mt-28; coloquei padding direto no section pra evitar colapso -->
+  <section id="services" class="relative bg-white pt-12 sm:pt-14 md:pt-16">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <h2 class="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-black">
         SERVIÇOS
       </h2>
     </div>
 
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-10 md:mt-14 pb-16 md:pb-20">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-8 sm:mt-10 md:mt-14 pb-16 md:pb-20">
       <TransitionGroup name="fade-list" tag="ul" class="space-y-7 md:space-y-9 overflow-visible">
         <li v-for="item in visibleServices" :key="item.id" class="relative isolate will-change-transform">
           <article
@@ -79,7 +80,7 @@ function toggleExpanded() {
       <div class="mt-8 md:mt-10 flex items-center justify-between flex-wrap">
         <button
           class="inline-flex items-center gap-2 rounded-full border border-zinc-300
-                 px-5 py-2.5 text-sm font-medium transition-colors
+                 px-5 py-2.5 text-sm font-medium transition-colors whitespace-nowrap
                  hover:bg-zinc-900 hover:text-white
                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/30
                  ml-2 sm:ml-3"
@@ -98,7 +99,7 @@ function toggleExpanded() {
         <a
           :href="contactHref"
           class="inline-flex items-center gap-2 rounded-full bg-zinc-900 text-white
-                 px-6 py-3 text-sm font-semibold tracking-tight
+                 px-6 py-3 text-sm font-semibold tracking-tight whitespace-nowrap leading-none select-none
                  hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/30
                  mr-2 sm:mr-3"
         >
