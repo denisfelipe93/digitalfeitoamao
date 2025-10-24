@@ -24,12 +24,12 @@
           Digital Feito à Mão
         </a>
 
-        <!-- Desktop menu -->
+        <!-- Desktop menu (sem barra no hover) -->
         <ul class="hidden md:flex items-center gap-9 lg:gap-10 font-sans uppercase font-medium text-[0.9rem] tracking-[0.22em]">
           <li v-for="(item, i) in navItems" :key="item.href">
             <a :href="item.href"
-               class="inline-flex items-center px-1 pb-0.5 border-b-2 border-transparent
-                      text-white/80 hover:text-white hover:border-white/60
+               class="inline-flex items-center px-1 text-white/80
+                      hover:text-white hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.35)]
                       focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60
                       transition-all duration-200"
                :style="linkStyle(i)">
@@ -63,17 +63,28 @@
         <div
           v-if="mobileOpen"
           id="mobile-menu"
-          class="fixed inset-y-0 right-0 w-[80vw] max-w-sm bg-black/70 backdrop-blur-2xl
+          class="fixed inset-y-0 right-0 w-[84vw] max-w-sm bg-[rgba(8,8,8,0.72)] backdrop-blur-2xl
                  border-l border-white/10 shadow-[0_0_60px_rgba(0,0,0,0.6)]
-                 flex flex-col justify-between z-50 rounded-l-2xl overflow-hidden"
+                 flex flex-col z-50 rounded-l-2xl overflow-hidden"
         >
-          <div class="flex-1 overflow-y-auto px-8 pt-20 pb-10 space-y-6">
-            <ul class="space-y-3 text-base uppercase tracking-[0.22em] font-medium text-white/90">
+          <!-- header -->
+          <div class="px-8 pt-8 pb-4 flex items-center justify-between">
+            <span class="text-white/70 uppercase tracking-[0.28em] text-xs">Menu</span>
+            <button @click="closeMobile"
+                    class="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-white/15 bg-white/5 hover:bg-white/10 text-white/80 transition">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-width="1.8" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <!-- nav items centralizados -->
+          <div class="flex-1 px-8 pb-8 flex flex-col items-center justify-center">
+            <ul class="w-full max-w-xs text-center space-y-2 text-base uppercase tracking-[0.22em] font-medium text-white/90">
               <li v-for="item in navItems" :key="item.href">
                 <a
                   :href="item.href"
-                  class="block py-3 px-3 rounded-lg transition-all duration-300
-                         hover:bg-white/10 hover:text-white hover:pl-4"
+                  class="block py-3 rounded-xl transition-all duration-300 hover:bg-white/10 hover:text-white"
                   @click="closeMobile"
                 >
                   {{ item.label }}
@@ -82,9 +93,20 @@
             </ul>
           </div>
 
-          <div class="px-8 py-6 border-t border-white/10 bg-white/5 flex items-center justify-between text-xs text-white/70">
-            <span>© {{ new Date().getFullYear() }} Digital Feito à Mão</span>
-            <button @click="closeMobile" class="underline hover:text-white transition">Fechar</button>
+          <!-- socials + footer -->
+          <div class="px-8 py-6 border-t border-white/10 bg-white/5">
+            <div class="flex items-center justify-center gap-3 mb-3">
+              <a v-for="s in social" :key="s.href" :href="s.href" target="_blank" rel="noopener"
+                 class="w-10 h-10 rounded-full border border-white/15 bg-white/5 hover:bg-white/15 text-white/80 hover:text-white
+                        flex items-center justify-center transition"
+                 :aria-label="s.label">
+                <!-- ícones inline para não depender de libs -->
+                <component :is="s.icon"></component>
+              </a>
+            </div>
+            <p class="text-center text-[11px] text-white/60">
+              © {{ new Date().getFullYear() }} Digital Feito à Mão
+            </p>
           </div>
         </div>
       </transition>
@@ -139,6 +161,7 @@
         </div>
       </div>
 
+      <!-- hint de rolagem – some quando travar -->
       <div
         :class="[
           'absolute bottom-6 left-1/2 -translate-x-1/2 text-xs tracking-widest uppercase transition-opacity duration-500',
@@ -152,12 +175,13 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref, computed, watch } from 'vue'
+import { onMounted, onBeforeUnmount, ref, computed, watch, h } from 'vue'
 
 type Srcset = { webp?: string }
 type FontesVideo = { webm?: string; mp4?: string }
 type Cta = { rotulo: string; href: string }
 type NavItem = { label: string; href: string }
+type Social = { label: string; href: string; icon: any }
 
 const props = withDefaults(defineProps<{
   titulo: string
@@ -196,7 +220,7 @@ const smoothProgress = ref(0)
 const winY = ref(0)
 
 /* trava pós-repouso (1x por carregamento) */
-const locked = ref(false) // quando vira true, o hero fica “congelado” no estado final
+const locked = ref(false)
 
 /* ===== navegação ===== */
 const navItems = ref<NavItem[]>([
@@ -204,6 +228,28 @@ const navItems = ref<NavItem[]>([
   { label: 'Como funciona', href: '#jornada' },
   { label: 'O que dizem',   href: '#depoimentos' },
   { label: 'Contato',       href: '#contato' }
+])
+
+/* social icons inline (SVGs mínimos) */
+const IconInstagram = () => h('svg', { xmlns:'http://www.w3.org/2000/svg', viewBox:'0 0 24 24', class:'w-5 h-5', fill:'currentColor' }, [
+  h('path', { d:'M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm0 2a3 3 0 00-3 3v10a3 3 0 003 3h10a3 3 0 003-3V7a3 3 0 00-3-3H7z' }),
+  h('path', { d:'M12 8a4 4 0 110 8 4 4 0 010-8zm5-1a1 1 0 110 2 1 1 0 010-2z' })
+])
+const IconX = () => h('svg', { xmlns:'http://www.w3.org/2000/svg', viewBox:'0 0 24 24', class:'w-5 h-5', fill:'currentColor' }, [
+  h('path', { d:'M3 3h4.7l5.2 7.1L18.4 3H21l-7.2 9.8L21 21h-4.7l-5.5-7.4L5.6 21H3l7.5-10L3 3z' })
+])
+const IconYouTube = () => h('svg', { xmlns:'http://www.w3.org/2000/svg', viewBox:'0 0 24 24', class:'w-5 h-5', fill:'currentColor' }, [
+  h('path', { d:'M23 8.5a4 4 0 00-2.8-2.8C18.4 5 12 5 12 5s-6.4 0-8.2.7A4 4 0 001 8.5 41.7 41.7 0 000 12a41.7 41.7 0 001 3.5 4 4 0 002.8 2.8C5.6 19 12 19 12 19s6.4 0 8.2-.7A4 4 0 0023 15.5 41.7 41.7 0 0024 12a41.7 41.7 0 00-1-3.5zM10 15V9l5 3-5 3z' })
+])
+const IconGitHub = () => h('svg', { xmlns:'http://www.w3.org/2000/svg', viewBox:'0 0 24 24', class:'w-5 h-5', fill:'currentColor' }, [
+  h('path', { d:'M12 2a10 10 0 00-3.2 19.5c.5.1.7-.2.7-.5v-1.8c-3 .7-3.7-1.4-3.7-1.4-.5-1.3-1.2-1.7-1.2-1.7-1-.7.1-.7.1-.7 1.1.1 1.7 1.1 1.7 1.1 1 .1.8-.8.8-.8-.7-.1-1.3-.4-1.6-.9 0 0-.7-.5.1-.5 0 0 .8.1 1.7 1 .5-.2 1.2-.4 1.9-.4s1.4.1 1.9.4c.9-.9 1.7-1 1.7-1 .8 0 .1.5.1.5-.3.5-.9.8-1.6.9 0 0 .2.9.8.8 0 0 .6-1 1.7-1.1 0 0 1.1 0 .1.7 0 0-.7.4-1.2 1.7 0 0-.7 2.1-3.7 1.4v1.8c0 .3.2.6.7.5A10 10 0 0012 2z' })
+])
+
+const social = ref<Social[]>([
+  { label:'Instagram', href:'https://instagram.com/denisc0de', icon: IconInstagram },
+  { label:'X (Twitter)', href:'https://x.com/DenisCode_', icon: IconX },
+  { label:'YouTube', href:'https://youtube.com/@odeniscode', icon: IconYouTube },
+  { label:'GitHub', href:'https://github.com/denisfelipe93', icon: IconGitHub }
 ])
 
 /* ===== MENU MOBILE ===== */
@@ -238,10 +284,8 @@ const END_PHASE = 0.90
 watch(() => smoothProgress.value, (p) => {
   if (!locked.value && p >= END_PHASE) {
     locked.value = true
-    // força o estado final estável
     smoothProgress.value = 1
     progress.value = 1
-    // limpa listeners/raf para o hero não “voltar” ao rolar para cima
     if (typeof window !== 'undefined') {
       window.removeEventListener('scroll', readScroll)
       window.removeEventListener('resize', readScroll)
@@ -279,7 +323,7 @@ const pEff = computed(() => locked.value ? 1 : smoothProgress.value)
 
 /* ===== efeitos ===== */
 const titleStyle = computed(() => {
-  const phase = remapClamped(START_DELAY, END_PHASE, pEff.value)
+  const phase = remapClamped(START_DELAY, 0.90, pEff.value)
   const p = easeInOutSine(phase)
   const tx = lerp(START_TX_VW, -TARGET_GUTTER_VW, p)
   const sc = lerp(1.002, 0.978, p)
