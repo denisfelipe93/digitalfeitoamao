@@ -2,6 +2,7 @@
   <section ref="sectionEl" class="relative h-[220vh] bg-white">
     <!-- NAVBAR FIXA -->
     <nav
+      ref="navEl"
       class="fixed inset-x-0 top-0 z-40 transition-all duration-500"
       :style="navStyle"
       @keydown.esc="closeMobile"
@@ -100,7 +101,6 @@
                  class="w-10 h-10 rounded-full border border-white/15 bg-white/5 hover:bg-white/15 text-white/80 hover:text-white
                         flex items-center justify-center transition"
                  :aria-label="s.label">
-                <!-- ícones inline para não depender de libs -->
                 <component :is="s.icon"></component>
               </a>
             </div>
@@ -145,7 +145,9 @@
         <div class="max-w-7xl mx-auto h-full px-6 md:px-8 lg:px-12 flex items-center">
           <div class="w-full" :class="alignTextClass">
             <div class="will-change-transform" :style="titleStyle">
-              <h1 class="font-semibold leading-[0.95] tracking-[-0.01em]" :style="{ fontSize: clampRem(2.6, 6.0) }">{{ titulo }}</h1>
+              <h1 class="font-semibold leading-[0.95] tracking-[-0.01em]" :style="{ fontSize: titleFontSize }">
+                {{ titulo }}
+              </h1>
             </div>
 
             <div class="mt-7 md:mt-9 max-w-2xl" :class="subBlockClass" :style="revealStyle">
@@ -215,12 +217,11 @@ const useVideo = computed(() => !!(props.videoSources?.webm || props.videoSource
 
 /* ===== refs ===== */
 const sectionEl = ref<HTMLElement | null>(null)
+const navEl = ref<HTMLElement | null>(null)
 const progress = ref(0)
 const smoothProgress = ref(0)
 const winY = ref(0)
-
-/* trava pós-repouso (1x por carregamento) */
-const locked = ref(false)
+const locked = ref(false) // trava pós-repouso
 
 /* ===== navegação ===== */
 const navItems = ref<NavItem[]>([
@@ -244,7 +245,6 @@ const IconYouTube = () => h('svg', { xmlns:'http://www.w3.org/2000/svg', viewBox
 const IconGitHub = () => h('svg', { xmlns:'http://www.w3.org/2000/svg', viewBox:'0 0 24 24', class:'w-5 h-5', fill:'currentColor' }, [
   h('path', { d:'M12 2a10 10 0 00-3.2 19.5c.5.1.7-.2.7-.5v-1.8c-3 .7-3.7-1.4-3.7-1.4-.5-1.3-1.2-1.7-1.2-1.7-1-.7.1-.7.1-.7 1.1.1 1.7 1.1 1.7 1.1 1 .1.8-.8.8-.8-.7-.1-1.3-.4-1.6-.9 0 0-.7-.5.1-.5 0 0 .8.1 1.7 1 .5-.2 1.2-.4 1.9-.4s1.4.1 1.9.4c.9-.9 1.7-1 1.7-1 .8 0 .1.5.1.5-.3.5-.9.8-1.6.9 0 0 .2.9.8.8 0 0 .6-1 1.7-1.1 0 0 1.1 0 .1.7 0 0-.7.4-1.2 1.7 0 0-.7 2.1-3.7 1.4v1.8c0 .3.2.6.7.5A10 10 0 0012 2z' })
 ])
-
 const social = ref<Social[]>([
   { label:'Instagram', href:'https://instagram.com/denisc0de', icon: IconInstagram },
   { label:'X (Twitter)', href:'https://x.com/DenisCode_', icon: IconX },
@@ -257,8 +257,26 @@ const mobileOpen = ref(false)
 function toggleMobile(){ mobileOpen.value = !mobileOpen.value }
 function closeMobile(){ mobileOpen.value = false }
 
-/* ===== leitura do scroll ===== */
+/* ===== leitura do scroll + responsive ===== */
 let raf = 0
+const startTxVW = ref(30)  // deslocamento inicial dinâmico
+const isMobile  = ref(false)
+
+function computeResponsive() {
+  if (typeof window === 'undefined') return
+  const w = window.innerWidth
+  if (w < 380)      { startTxVW.value = 12; isMobile.value = true }
+  else if (w < 640) { startTxVW.value = 16; isMobile.value = true }
+  else if (w < 1024){ startTxVW.value = 24; isMobile.value = false }
+  else              { startTxVW.value = 30; isMobile.value = false }
+}
+
+function updateNavOffset() {
+  const h = (navEl.value?.offsetHeight ?? 72) + 16
+  if (typeof document !== 'undefined') {
+    document.documentElement.style.setProperty('--nav-offset', `${h}px`)
+  }
+}
 
 const readScroll = () => {
   if (!sectionEl.value || locked.value) return
@@ -279,7 +297,7 @@ const tick = () => {
   if (!locked.value) raf = requestAnimationFrame(tick)
 }
 
-/* ao atingir o repouso, travamos visualmente e paramos de escutar scroll/raf */
+/* trava ao atingir o repouso */
 const END_PHASE = 0.90
 watch(() => smoothProgress.value, (p) => {
   if (!locked.value && p >= END_PHASE) {
@@ -288,22 +306,30 @@ watch(() => smoothProgress.value, (p) => {
     progress.value = 1
     if (typeof window !== 'undefined') {
       window.removeEventListener('scroll', readScroll)
-      window.removeEventListener('resize', readScroll)
+      window.removeEventListener('resize', onResize)
     }
     cancelAnimationFrame(raf)
   }
 })
 
+const onResize = () => {
+  readScroll()
+  computeResponsive()
+  updateNavOffset()
+}
+
 onMounted(() => {
+  computeResponsive()
+  updateNavOffset()
   readScroll()
   smoothProgress.value = progress.value
   tick()
   window.addEventListener('scroll', readScroll, { passive: true })
-  window.addEventListener('resize', readScroll)
+  window.addEventListener('resize', onResize)
 })
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', readScroll)
-  window.removeEventListener('resize', readScroll)
+  window.removeEventListener('resize', onResize)
   cancelAnimationFrame(raf)
 })
 
@@ -315,17 +341,20 @@ const easeInOutCubic = (t: number) => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2,
 const remapClamped = (from: number, to: number, v: number) => clamp01((v - from) / (to - from))
 
 const TARGET_GUTTER_VW = 5
-const START_TX_VW     = 30
 const START_DELAY     = 0.14
 
 /* progresso efetivo: se travado, fica 1 (estado final) */
 const pEff = computed(() => locked.value ? 1 : smoothProgress.value)
 
+/* font-size do título responsivo */
+const clampRem = (minRem: number, maxRem: number) => `clamp(${minRem}rem, 6vw, ${maxRem}rem)`
+const titleFontSize = computed(() => isMobile.value ? clampRem(2.2, 4.8) : clampRem(2.6, 6.0))
+
 /* ===== efeitos ===== */
 const titleStyle = computed(() => {
   const phase = remapClamped(START_DELAY, 0.90, pEff.value)
   const p = easeInOutSine(phase)
-  const tx = lerp(START_TX_VW, -TARGET_GUTTER_VW, p)
+  const tx = lerp(startTxVW.value, -TARGET_GUTTER_VW, p)
   const sc = lerp(1.002, 0.978, p)
   return { transform: `translate3d(${tx}vw,0,0) scale(${sc})`, transition: 'transform 0.30s ease-out' }
 })
@@ -363,7 +392,6 @@ const leftVignetteStyle = computed(() => {
 })
 
 /* ===== helpers visuais ===== */
-const clampRem = (minRem: number, maxRem: number) => `clamp(${minRem}rem, 6vw, ${maxRem}rem)`
 const alignTextClass = computed(() => props.alinhamento === 'centro' ? 'text-center' : 'text-left')
 const subBlockClass  = computed(() => props.alinhamento === 'centro' ? 'mx-auto' : '')
 const ctaJustifyClass= computed(() => props.alinhamento === 'centro' ? 'justify-center' : 'justify-start')
