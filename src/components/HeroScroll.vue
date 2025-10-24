@@ -139,13 +139,20 @@
         </div>
       </div>
 
-      <div class="absolute bottom-6 left-1/2 -translate-x-1/2 text-xs tracking-widest uppercase opacity-80">Role</div>
+      <div
+        :class="[
+          'absolute bottom-6 left-1/2 -translate-x-1/2 text-xs tracking-widest uppercase transition-opacity duration-500',
+          locked ? 'opacity-0 pointer-events-none' : 'opacity-80'
+        ]"
+      >
+        scroll down
+      </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref, computed } from 'vue'
+import { onMounted, onBeforeUnmount, ref, computed, watch } from 'vue'
 
 type Srcset = { webp?: string }
 type FontesVideo = { webm?: string; mp4?: string }
@@ -188,6 +195,9 @@ const progress = ref(0)
 const smoothProgress = ref(0)
 const winY = ref(0)
 
+/* trava pós-repouso (1x por carregamento) */
+const locked = ref(false) // quando vira true, o hero fica “congelado” no estado final
+
 /* ===== navegação ===== */
 const navItems = ref<NavItem[]>([
   { label: 'Serviços',      href: '#services' },
@@ -205,7 +215,7 @@ function closeMobile(){ mobileOpen.value = false }
 let raf = 0
 
 const readScroll = () => {
-  if (!sectionEl.value) return
+  if (!sectionEl.value || locked.value) return
   const rect = sectionEl.value.getBoundingClientRect()
   const vh = typeof window !== 'undefined' ? window.innerHeight : 0
   const total = Math.max(rect.height - vh, 1)
@@ -220,8 +230,25 @@ const tick = () => {
   const delta = progress.value - smoothProgress.value
   const step = Math.sign(delta) * Math.min(Math.abs(delta) * damping, maxStep)
   smoothProgress.value += step
-  raf = requestAnimationFrame(tick)
+  if (!locked.value) raf = requestAnimationFrame(tick)
 }
+
+/* ao atingir o repouso, travamos visualmente e paramos de escutar scroll/raf */
+const END_PHASE = 0.90
+watch(() => smoothProgress.value, (p) => {
+  if (!locked.value && p >= END_PHASE) {
+    locked.value = true
+    // força o estado final estável
+    smoothProgress.value = 1
+    progress.value = 1
+    // limpa listeners/raf para o hero não “voltar” ao rolar para cima
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('scroll', readScroll)
+      window.removeEventListener('resize', readScroll)
+    }
+    cancelAnimationFrame(raf)
+  }
+})
 
 onMounted(() => {
   readScroll()
@@ -246,9 +273,9 @@ const remapClamped = (from: number, to: number, v: number) => clamp01((v - from)
 const TARGET_GUTTER_VW = 5
 const START_TX_VW     = 30
 const START_DELAY     = 0.14
-const END_PHASE       = 0.90
 
-const pEff = computed(() => smoothProgress.value)
+/* progresso efetivo: se travado, fica 1 (estado final) */
+const pEff = computed(() => locked.value ? 1 : smoothProgress.value)
 
 /* ===== efeitos ===== */
 const titleStyle = computed(() => {
