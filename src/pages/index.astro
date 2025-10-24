@@ -1,13 +1,4 @@
 ---
-/* Página inicial:
-   - Usa o Layout base
-   - Preloader (ilha Vue)
-   - Hero com imagem estática
-   - ServicesSection
-   - JourneyCreative
-   - Testimonials
-   - Contact (Whats)
-*/
 import Layout from '../layouts/Layout.astro'
 import Preloader from '../components/Preloader.vue'
 import HeroScroll from '../components/HeroScroll.vue'
@@ -17,11 +8,12 @@ import JourneyCreative from '@/components/JourneyCreative.vue'
 import Testimonials from '@/components/Testimonials.vue'
 import ContactWhats from '@/components/ContactWhats.vue'
 import Footer from '@/components/Footer.vue'
-import type { loadRenderers } from 'astro:container'
 ---
 
 <Layout title="Direção criativa — branding, identidade e conteúdo">
   <Preloader client:load />
+
+  <div id="top"></div>
 
   <HeroScroll
     titulo="digital feito a mão"
@@ -29,15 +21,26 @@ import type { loadRenderers } from 'astro:container'
     imageAlt="Equipe de filmagem em jardim durante uma produção"
     imageSrcset={{ webp: capa }}
     overlay={82}
+    lockOnce={true}
     client:visible
   />
 
-  <ServicesSection client:visible />
-  <JourneyCreative client:visible />
-  <Testimonials client:visible />
-  <ContactWhats client:visible />
+  <section id="services">
+    <ServicesSection client:visible />
+  </section>
 
-  <!-- Footer (props em camelCase e objetos entre { } no Astro) -->
+  <section id="jornada">
+    <JourneyCreative client:visible />
+  </section>
+
+  <section id="depoimentos">
+    <Testimonials client:visible />
+  </section>
+
+  <section id="contato">
+    <ContactWhats client:visible />
+  </section>
+
   <Footer
     client:visible
     navPrimary={[
@@ -57,6 +60,4 @@ import type { loadRenderers } from 'astro:container'
       { label:'GitHub', href:'https://github.com/denisfelipe93' },
     ]}
   />
-
-
 </Layout>
