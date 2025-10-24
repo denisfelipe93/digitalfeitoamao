@@ -1,4 +1,5 @@
 ---
+/* Página inicial */
 import Layout from '../layouts/Layout.astro'
 import Preloader from '../components/Preloader.vue'
 import HeroScroll from '../components/HeroScroll.vue'
@@ -11,20 +12,23 @@ import Footer from '@/components/Footer.vue'
 ---
 
 <Layout title="Direção criativa — branding, identidade e conteúdo">
-  <Preloader client:load />
-
+  <!-- âncora para o link do logotipo/brand -->
   <div id="top"></div>
 
+  <!-- Preloader -->
+  <Preloader client:load />
+
+  <!-- Hero (sem lockOnce) -->
   <HeroScroll
     titulo="digital feito a mão"
     imageSrc={capa}
     imageAlt="Equipe de filmagem em jardim durante uma produção"
     imageSrcset={{ webp: capa }}
     overlay={82}
-    lockOnce={true}
     client:visible
   />
 
+  <!-- Seções com IDs para os links do menu -->
   <section id="services">
     <ServicesSection client:visible />
   </section>

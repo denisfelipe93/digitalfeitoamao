@@ -2,65 +2,92 @@
   <section ref="sectionEl" class="relative h-[220vh] bg-white">
     <!-- NAVBAR FIXA -->
     <nav
-      class="fixed inset-x-0 top-0 z-40 transition-colors duration-300"
+      class="fixed inset-x-0 top-0 z-40 transition-all duration-500"
       :style="navStyle"
       @keydown.esc="closeMobile"
     >
+      <!-- fundo vidro -->
       <div
-        class="absolute inset-0 transition-[backdrop-filter,background-color,box-shadow] duration-300"
-        :class="{'backdrop-blur-xl backdrop-saturate-150 ring-1 ring-white/10': navSolid}"
+        class="absolute inset-0 backdrop-blur-md bg-black/20 border-b border-white/10 shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
+        :class="{ 'bg-black/40 backdrop-blur-xl': navSolid }"
       ></div>
 
+      <!-- conteúdo principal -->
       <div
-        class="relative max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12
+        class="relative max-w-7xl mx-auto px-5 sm:px-6 md:px-8 lg:px-12
                flex items-center justify-between py-4 md:py-5"
       >
         <a href="#top"
-           class="font-sans font-semibold tracking-[0.18em] uppercase text-white text-[1.05rem] md:text-[1.2rem] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+           class="font-sans font-semibold tracking-[0.18em] uppercase text-white
+                  text-[1.05rem] md:text-[1.2rem] transition-all duration-300 hover:text-white/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
            :style="brandStyle">
           Digital Feito à Mão
         </a>
 
-        <!-- Desktop -->
-        <ul class="hidden md:flex items-center gap-8 lg:gap-10 font-sans uppercase font-medium text-[0.85rem] md:text-[0.9rem] tracking-[0.22em]">
+        <!-- Desktop menu -->
+        <ul class="hidden md:flex items-center gap-9 lg:gap-10 font-sans uppercase font-medium text-[0.9rem] tracking-[0.22em]">
           <li v-for="(item, i) in navItems" :key="item.href">
             <a :href="item.href"
-               class="inline-flex items-center rounded-md text-white/85 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60 transition duration-200 hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.95)]"
+               class="inline-flex items-center px-1 pb-0.5 border-b-2 border-transparent
+                      text-white/80 hover:text-white hover:border-white/60
+                      focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60
+                      transition-all duration-200"
                :style="linkStyle(i)">
               {{ item.label }}
             </a>
           </li>
         </ul>
 
-        <!-- Mobile trigger -->
+        <!-- Botão mobile -->
         <button
           type="button"
-          class="md:hidden inline-flex items-center justify-center rounded-md px-3 py-2 text-white/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+          class="md:hidden relative inline-flex items-center justify-center w-10 h-10 rounded-lg
+                 border border-white/20 bg-white/5 hover:bg-white/10 text-white/90 transition-all duration-300
+                 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
           @click="toggleMobile"
           :aria-expanded="mobileOpen ? 'true' : 'false'"
           aria-controls="mobile-menu"
         >
           <span class="sr-only">Abrir menu</span>
-          <svg v-if="!mobileOpen" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-width="1.6" d="M4 6h16M4 12h16M4 18h16"/></svg>
-          <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-width="1.6" d="M6 18L18 6M6 6l12 12"/></svg>
+          <svg v-if="!mobileOpen" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-width="1.8" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-width="1.8" d="M6 18L18 6M6 6l12 12" />
+          </svg>
         </button>
       </div>
 
-      <!-- Mobile drawer -->
-      <div v-show="mobileOpen" id="mobile-menu" class="md:hidden relative">
-        <div class="absolute inset-0 bg-black/30" @click="closeMobile" aria-hidden="true"></div>
-        <div class="relative bg-black/85 backdrop-blur-xl ring-1 ring-white/10">
-          <ul class="px-6 py-4 space-y-3 text-sm uppercase tracking-[0.22em]">
-            <li v-for="item in navItems" :key="item.href">
-              <a :href="item.href"
-                 class="block py-3 text-white/90 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
-                 @click="closeMobile">
-                {{ item.label }}
-              </a>
-            </li>
-          </ul>
+      <!-- Menu Mobile Premium -->
+      <transition name="slide-fade">
+        <div
+          v-if="mobileOpen"
+          id="mobile-menu"
+          class="fixed inset-y-0 right-0 w-[80vw] max-w-sm bg-black/70 backdrop-blur-2xl
+                 border-l border-white/10 shadow-[0_0_60px_rgba(0,0,0,0.6)]
+                 flex flex-col justify-between z-50 rounded-l-2xl overflow-hidden"
+        >
+          <div class="flex-1 overflow-y-auto px-8 pt-20 pb-10 space-y-6">
+            <ul class="space-y-3 text-base uppercase tracking-[0.22em] font-medium text-white/90">
+              <li v-for="item in navItems" :key="item.href">
+                <a
+                  :href="item.href"
+                  class="block py-3 px-3 rounded-lg transition-all duration-300
+                         hover:bg-white/10 hover:text-white hover:pl-4"
+                  @click="closeMobile"
+                >
+                  {{ item.label }}
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="px-8 py-6 border-t border-white/10 bg-white/5 flex items-center justify-between text-xs text-white/70">
+            <span>© {{ new Date().getFullYear() }} Digital Feito à Mão</span>
+            <button @click="closeMobile" class="underline hover:text-white transition">Fechar</button>
+          </div>
         </div>
-      </div>
+      </transition>
     </nav>
 
     <!-- HERO -->
@@ -118,7 +145,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref, computed, watch } from 'vue'
+import { onMounted, onBeforeUnmount, ref, computed } from 'vue'
 
 type Srcset = { webp?: string }
 type FontesVideo = { webm?: string; mp4?: string }
@@ -137,7 +164,6 @@ const props = withDefaults(defineProps<{
   poster?: string
   ctaPrimaria?: Cta
   overlay?: number
-  lockOnce?: boolean
 }>(), {
   subtitulo: "Cuidamos do seu digital com o cuidado, planejamento e impacto. Lapidando sua marca na internet delicadamente, como se fosse à mão.",
   alinhamento: 'esquerda',
@@ -147,8 +173,7 @@ const props = withDefaults(defineProps<{
   videoSources: () => ({}),
   poster: '',
   ctaPrimaria: () => ({ rotulo: 'Fale conosco', href: '#contato' }),
-  overlay: 82,
-  lockOnce: true
+  overlay: 82
 })
 
 /* ===== preferências e mídia ===== */
@@ -161,8 +186,6 @@ const useVideo = computed(() => !!(props.videoSources?.webm || props.videoSource
 const sectionEl = ref<HTMLElement | null>(null)
 const progress = ref(0)
 const smoothProgress = ref(0)
-const locked = ref(false)
-const HERO_KEY = 'heroPlayed-v1'
 const winY = ref(0)
 
 /* ===== navegação ===== */
@@ -173,22 +196,22 @@ const navItems = ref<NavItem[]>([
   { label: 'Contato',       href: '#contato' }
 ])
 
-/* ===== leitura do scroll (sem auto-scroll) ===== */
+/* ===== MENU MOBILE ===== */
+const mobileOpen = ref(false)
+function toggleMobile(){ mobileOpen.value = !mobileOpen.value }
+function closeMobile(){ mobileOpen.value = false }
+
+/* ===== leitura do scroll ===== */
 let raf = 0
 
 const readScroll = () => {
   if (!sectionEl.value) return
-
   const rect = sectionEl.value.getBoundingClientRect()
-  const vh   = typeof window !== 'undefined' ? window.innerHeight : 0
+  const vh = typeof window !== 'undefined' ? window.innerHeight : 0
   const total = Math.max(rect.height - vh, 1)
-
   const passed = Math.min(Math.max(-rect.top, 0), total)
   progress.value = passed / total
-
-  if (typeof window !== 'undefined') {
-    winY.value = window.scrollY || 0
-  }
+  if (typeof window !== 'undefined') winY.value = window.scrollY || 0
 }
 
 const tick = () => {
@@ -200,28 +223,16 @@ const tick = () => {
   raf = requestAnimationFrame(tick)
 }
 
-const onScroll = () => readScroll()
-const onResize = () => readScroll()
-
 onMounted(() => {
-  if (typeof window !== 'undefined' && sessionStorage.getItem(HERO_KEY) && props.lockOnce) {
-    locked.value = true
-    progress.value = 1
-    smoothProgress.value = 1
-    winY.value = window.scrollY || 0
-  } else {
-    readScroll()
-    smoothProgress.value = progress.value
-    tick()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onResize)
-  }
+  readScroll()
+  smoothProgress.value = progress.value
+  tick()
+  window.addEventListener('scroll', readScroll, { passive: true })
+  window.addEventListener('resize', readScroll)
 })
 onBeforeUnmount(() => {
-  if (typeof window !== 'undefined') {
-    window.removeEventListener('scroll', onScroll)
-    window.removeEventListener('resize', onResize)
-  }
+  window.removeEventListener('scroll', readScroll)
+  window.removeEventListener('resize', readScroll)
   cancelAnimationFrame(raf)
 })
 
@@ -237,15 +248,7 @@ const START_TX_VW     = 30
 const START_DELAY     = 0.14
 const END_PHASE       = 0.90
 
-watch(smoothProgress, (p) => {
-  if (!props.lockOnce || locked.value) return
-  if (p >= END_PHASE) {
-    locked.value = true
-    if (typeof window !== 'undefined') sessionStorage.setItem(HERO_KEY, '1')
-  }
-})
-
-const pEff = computed(() => locked.value ? 1 : smoothProgress.value)
+const pEff = computed(() => smoothProgress.value)
 
 /* ===== efeitos ===== */
 const titleStyle = computed(() => {
@@ -318,9 +321,14 @@ const linkStyle = (i: number) => {
   const ty     = lerp(6, 0, t)
   return { filter: `blur(${blurPx.toFixed(2)}px)`, opacity: op.toFixed(3), transform: `translate3d(0, ${ty.toFixed(2)}px, 0)`, transition: 'filter 260ms ease, opacity 240ms linear, transform 260ms ease', willChange: 'filter, opacity, transform' }
 }
-
-/* ===== navegação mobile ===== */
-const mobileOpen = ref(false)
-function toggleMobile(){ mobileOpen.value = !mobileOpen.value }
-function closeMobile(){ mobileOpen.value = false }
 </script>
+
+<style scoped>
+/* transição do painel mobile (direita) */
+.slide-fade-enter-active,
+.slide-fade-leave-active { transition: all 0.35s ease; }
+.slide-fade-enter-from   { transform: translateX(100%); opacity: 0; }
+.slide-fade-enter-to     { transform: translateX(0);    opacity: 1; }
+.slide-fade-leave-from   { transform: translateX(0);    opacity: 1; }
+.slide-fade-leave-to     { transform: translateX(100%); opacity: 0; }
+</style>

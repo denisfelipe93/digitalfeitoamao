@@ -4,10 +4,10 @@ import { gsap } from 'gsap'
 
 /* ===== Config ===== */
 const WORDS = ['digital', 'feito', 'a', 'mão']
-// durações podem ser ajustadas; mantive o “feel” do que você tinha
+// durações base do efeito da palavra
 const D_IN = 0.8, D_HOLD = 0.8, D_OUT = 0.45
 const BLUR_START = 3.5, BLUR_VISIBLE = 0.6, BLUR_GLIDE = 0.2, BLUR_OUT = 5
-const MIN_DURATION_MS = 2000 // garantia de “tempo mínimo” (não move o % sozinho)
+const MIN_DURATION_MS = 2000 // tempo mínimo visível (não dirige o %)
 
 /* ===== Estado ===== */
 const visible = ref(true)
@@ -22,18 +22,18 @@ let assetsPromise
 // milestones fixos
 const MILESTONES = [20, 40, 60, 80]
 
-// tween de percent controlado por GSAP (sem setInterval)
+// tween de percent controlado por GSAP (fluido entre marcos)
 const pObj = { v: 1 }
-function tweenPercent(to, dur = 0.25, ease = 'power1.out') {
+function tweenPercent(to) {
   gsap.to(pObj, {
     v: to,
-    duration: dur,
-    ease,
+    duration: 0.8,            // << fluido (antes 0.25)
+    ease: 'power2.out',
     onUpdate: () => { percent.value = Math.round(pObj.v) }
   })
 }
 
-/* helpers de preload (você pode ajustar os assets conforme sua mídia real) */
+/* helpers de preload (ajuste fontes/mídias conforme seu projeto) */
 function preloadImage(src) {
   return new Promise((res, rej) => {
     const img = new Image()
@@ -61,8 +61,8 @@ function addWord(tl, text, idx) {
 
   tl.add(() => {
       if (stage.value) { stage.value.innerHTML = ''; stage.value.appendChild(el) }
-      // ao entrar a palavra, animamos o % exatamente para o marco
-      tweenPercent(MILESTONES[idx], 0.28)
+      // ao entrar a palavra, animamos o % exatamente para o marco (fluido)
+      tweenPercent(MILESTONES[idx])
     })
     .fromTo(
       el,
@@ -79,7 +79,7 @@ function finish() {
   // anima 100% e some o overlay
   gsap.to(pObj, {
     v: 100,
-    duration: 0.25,
+    duration: 0.35,
     ease: 'power2.out',
     onUpdate: () => (percent.value = Math.round(pObj.v)),
     onComplete: () => {
