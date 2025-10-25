@@ -148,7 +148,7 @@
           <div class="w-full" :class="alignTextClass">
 
             <!-- bloco do título com offset e halo -->
-            <div class="relative inline-block" :style="titleBlockStyle">
+            <div class="relative inline-block max-w-[min(92vw,40ch)]" :style="titleBlockStyle">
               <div
                 class="absolute -inset-y-6 -left-6 right-0 rounded-[32px] pointer-events-none"
                 :style="titleHaloStyle"
@@ -156,13 +156,13 @@
               />
               <!-- TÍTULO -->
               <h1
-                class="font-semibold leading-[0.95] lowercase tracking-[0.02em] flex flex-wrap gap-x-[2.2ch]"
-                :style="titleShadowStyle"
+                class="font-semibold lowercase tracking-[0.01em] flex flex-wrap"
+                :style="[titleShadowStyle, titleGapStyle, { lineHeight: titleLineHeight }]"
               >
                 <template v-for="(w, i) in words" :key="i">
-                  <span 
-                    class="inline-block will-change-transform mr-[0.8ch]"
-                    :style="revealWordStyle(i)"
+                  <span
+                    class="inline-block will-change-transform"
+                    :style="[revealWordStyle(i), wordSpacerStyle]"
                   >
                     <span :style="{ fontSize: titleFontSize }">{{ w }}</span>
                   </span>
@@ -186,13 +186,17 @@
           </div>
         </div>
 
+        <!-- HINT de scroll (PT-BR, em posição mais alta no mobile) -->
         <div
           :class="[
-            'absolute bottom-6 left-1/2 -translate-x-1/2 text-xs tracking-widest uppercase transition-opacity duration-500 text-white/70',
-            locked ? 'opacity-0 pointer-events-none' : 'opacity-80'
+            'absolute left-1/2 -translate-x-1/2 text-[11px] md:text-xs tracking-wide md:tracking-widest lowercase',
+            'transition-opacity duration-500 text-white/80 select-none pointer-events-none',
+            'md:bottom-6',
+            locked ? 'opacity-0 pointer-events-none' : 'opacity-90'
           ]"
+          :style="scrollHintStyle"
         >
-          scroll down
+          role a página
         </div>
       </div>
     </div>
@@ -214,7 +218,7 @@ const props = withDefaults(defineProps<{
   titulo: string
   subtitulo?: string
   alinhamento?: 'esquerda' | 'centro'
-  imageSrc?: string            // <— agora OPCIONAL
+  imageSrc?: string
   imageAlt?: string
   imageSrcset?: Srcset
   sizes?: string
@@ -227,7 +231,7 @@ const props = withDefaults(defineProps<{
 }>(), {
   subtitulo: "Cuidamos do seu digital com o cuidado, planejamento e impacto. Lapidando sua marca na internet delicadamente, como se fosse à mão.",
   alinhamento: 'esquerda',
-  imageSrc: '',                // <— default vazio
+  imageSrc: '',
   imageAlt: '',
   imageSrcset: () => ({}),
   sizes: '(max-width:768px) 100vw, 90vw',
@@ -282,12 +286,13 @@ const isMobile  = ref(false)
 const startTxVW = ref(30)
 
 function computeResponsive() {
-  if (typeof window === 'undefined') return
-  const w = window.innerWidth
-  if (w < 380)      { startTxVW.value = 12; isMobile.value = true }
-  else if (w < 640) { startTxVW.value = 16; isMobile.value = true }
-  else if (w < 1024){ startTxVW.value = 24; isMobile.value = false }
-  else              { startTxVW.value = 30; isMobile.value = false }
+  if (typeof window !== 'undefined') {
+    const w = window.innerWidth
+    if (w < 380)      { startTxVW.value = 12; isMobile.value = true }
+    else if (w < 640) { startTxVW.value = 16; isMobile.value = true }
+    else if (w < 1024){ startTxVW.value = 24; isMobile.value = false }
+    else              { startTxVW.value = 30; isMobile.value = false }
+  }
 }
 function updateNavOffset() {
   const h = (navEl.value?.offsetHeight ?? 72) + 16
@@ -387,7 +392,8 @@ const pEff = computed(() => locked.value ? 1 : smoothProgress.value)
 
 /* Título responsivo */
 const clampRem = (minRem: number, maxRem: number) => `clamp(${minRem}rem, 6vw, ${maxRem}rem)`
-const titleFontSize = computed(() => isMobile.value ? clampRem(2.4, 4.8) : clampRem(3.0, 6.4))
+const titleFontSize = computed(() => isMobile.value ? clampRem(2.2, 4.2) : clampRem(3.0, 6.0))
+const titleLineHeight = computed(() => isMobile.value ? 1.04 : 0.95)
 
 /* Navbar */
 const navSolid = computed(() => (pEff.value >= 0.30) || (winY.value > 8))
@@ -447,6 +453,15 @@ const ctaJustifyClass= computed(() => props.alinhamento === 'centro' ? 'justify-
 /* Título */
 const words = computed(() => (props.titulo || '').toLowerCase().trim().split(/\s+/))
 
+/* Espaços do título dinâmicos */
+const titleGapStyle = computed<CSSProperties>(() => ({
+  columnGap: isMobile.value ? '0.9ch' : '2.0ch',
+  rowGap:    isMobile.value ? '0.25ch' : '0.5ch'
+}))
+const wordSpacerStyle = computed<CSSProperties>(() => ({
+  marginRight: isMobile.value ? '0.3ch' : '0.8ch'
+}))
+
 /* Reveals */
 const START_DELAY = 0.14
 const revealWordStyle = (i:number): CSSProperties => {
@@ -476,7 +491,7 @@ const ctaDelayStyle = computed<CSSProperties>(() => ({
 
 /* Offset e nitidez do título */
 const titleBlockStyle = computed<CSSProperties>(() => ({
-  transform: `translate3d(${props.titleOffsetVW}vw, 0, 0)`
+  transform: `translate3d(${isMobile.value ? 0 : props.titleOffsetVW}vw, 0, 0)`
 }))
 const titleHaloStyle = computed<CSSProperties>(() => ({
   background:
@@ -489,6 +504,14 @@ const titleShadowStyle = computed<CSSProperties>(() => ({
 const subtitleShadowStyle = computed<CSSProperties>(() => ({
   textShadow: '0 1px 12px rgba(0,0,0,0.5)'
 }))
+
+/* Scroll hint position (mobile sobe + safe-area) */
+const scrollHintStyle = computed<CSSProperties>(() => {
+  if (isMobile.value) {
+    return { bottom: 'calc(env(safe-area-inset-bottom, 0px) + 64px)' }
+  }
+  return {}
+})
 </script>
 
 <style scoped>
