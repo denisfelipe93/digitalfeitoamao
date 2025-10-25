@@ -10,8 +10,7 @@
       <div
         class="absolute inset-0 backdrop-blur-md bg-black/20 border-b border-white/10 shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
         :class="{ 'bg-black/40 backdrop-blur-xl': navSolid }"
-      ></div>
-
+      />
       <div
         class="relative max-w-7xl mx-auto px-5 sm:px-6 md:px-8 lg:px-12
                flex items-center justify-between py-4 md:py-5"
@@ -58,7 +57,7 @@
         </button>
       </div>
 
-      <!-- Menu Mobile (dark) -->
+      <!-- Menu Mobile -->
       <transition name="slide-fade">
         <div
           v-if="mobileOpen"
@@ -104,7 +103,6 @@
     <div class="sticky top-0 h-[100vh] overflow-hidden text-white">
       <!-- mídia -->
       <div class="absolute inset-0 -z-10">
-        <!-- Vídeo (quando disponível) -->
         <video
           v-if="useVideo"
           ref="videoEl"
@@ -123,7 +121,6 @@
           <source v-if="videoSources?.mp4"  :src="videoSources.mp4"  type="video/mp4"  />
         </video>
 
-        <!-- Fallback imagem (reduced-motion ou sem vídeo) -->
         <picture v-else>
           <source v-if="imageSrcset?.webp" :srcset="imageSrcset.webp" type="image/webp" />
           <img
@@ -145,36 +142,39 @@
 
       <!-- conteúdo -->
       <div class="relative h-full w-full pt-[64px] md:pt-[72px]">
-        <!-- grain (mix-blend/opacity via class para evitar conflito TS) -->
         <div class="absolute inset-0 opacity-[0.16] mix-blend-overlay" :style="grainStyle"></div>
 
         <div class="max-w-7xl mx-auto h-full px-6 md:px-8 lg:px-12 flex items-center">
           <div class="w-full" :class="alignTextClass">
+
             <!-- bloco do título com offset e halo -->
             <div class="relative inline-block" :style="titleBlockStyle">
               <div
                 class="absolute -inset-y-6 -left-6 right-0 rounded-[32px] pointer-events-none"
                 :style="titleHaloStyle"
                 aria-hidden="true"
-              ></div>
-
-              <h1 class="font-semibold leading-[0.95] tracking-[0.01em] lowercase" :style="titleShadowStyle">
-                <span
-                  v-for="(w, i) in words"
-                  :key="i"
-                  class="inline-block mr-[0.35ch] will-change-transform"
-                  :style="revealWordStyle(i)"
-                >
-                  <span :style="{ fontSize: titleFontSize }">{{ w }}</span>
-                </span>
+              />
+              <!-- TÍTULO: Solução 4 implementada -->
+              <h1
+                class="font-semibold leading-[0.95] lowercase tracking-[0.02em] flex flex-wrap gap-x-[1ch]"
+                :style="titleShadowStyle"
+              >
+                <template v-for="(w, i) in words" :key="i">
+                  <span 
+                    class="inline-block will-change-transform mr-[0.3ch]"
+                    :style="revealWordStyle(i)"
+                  >
+                    <span :style="{ fontSize: titleFontSize }">{{ w }}</span>
+                  </span>
+                </template>
               </h1>
             </div>
 
+            <!-- subtítulo + CTA -->
             <div class="mt-7 md:mt-9 max-w-2xl" :class="subBlockClass" :style="revealStyle">
               <p v-if="subtitulo" class="text-white/90 text-base md:text-lg" :style="subtitleShadowStyle">
                 {{ subtitulo }}
               </p>
-
               <div v-if="ctaPrimaria" class="mt-6 flex flex-wrap gap-3" :class="ctaJustifyClass">
                 <a :href="ctaPrimaria.href" :style="ctaDelayStyle"
                    class="rounded-2xl px-5 py-3 text-sm md:text-base font-medium bg-white text-black hover:opacity-90 transition">
@@ -182,10 +182,10 @@
                 </a>
               </div>
             </div>
+
           </div>
         </div>
 
-        <!-- hint -->
         <div
           :class="[
             'absolute bottom-6 left-1/2 -translate-x-1/2 text-xs tracking-widest uppercase transition-opacity duration-500 text-white/70',
@@ -203,13 +203,13 @@
 import { onMounted, onBeforeUnmount, ref, computed, watch } from 'vue'
 import type { CSSProperties } from 'vue'
 
-/* ===== Tipagens ===== */
+/* Tipos */
 type Srcset = { webp?: string }
 type FontesVideo = { webm?: string; mp4?: string }
 type Cta = { rotulo: string; href: string }
 type NavItem = { label: string; href: string }
 
-/* ===== Props ===== */
+/* Props */
 const props = withDefaults(defineProps<{
   titulo: string
   subtitulo?: string
@@ -222,9 +222,7 @@ const props = withDefaults(defineProps<{
   poster?: string
   ctaPrimaria?: Cta
   overlay?: number
-  /** força usar vídeo mesmo se o SO estiver com reduced-motion */
   forceVideo?: boolean
-  /** desloca o bloco do título (negativo p/ esquerda) */
   titleOffsetVW?: number
 }>(), {
   subtitulo: "Cuidamos do seu digital com o cuidado, planejamento e impacto. Lapidando sua marca na internet delicadamente, como se fosse à mão.",
@@ -240,7 +238,7 @@ const props = withDefaults(defineProps<{
   titleOffsetVW: -6
 })
 
-/* ===== Preferências e mídia ===== */
+/* Preferência de movimento / vídeo */
 const prefersReduced = typeof window !== 'undefined'
   ? window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
   : false
@@ -248,7 +246,7 @@ const useVideo = computed(() =>
   !!(props.videoSources?.webm || props.videoSources?.mp4) && (!prefersReduced || props.forceVideo)
 )
 
-/* ===== Refs/estado ===== */
+/* Refs / estado */
 const sectionEl = ref<HTMLElement | null>(null)
 const navEl = ref<HTMLElement | null>(null)
 const videoEl = ref<HTMLVideoElement | null>(null)
@@ -258,25 +256,29 @@ const smoothProgress = ref(0)
 const winY = ref(0)
 const locked = ref(false)
 
-/* ===== Navegação ===== */
+/* Menu */
 const navItems = ref<NavItem[]>([
   { label: 'Serviços',      href: '#services' },
   { label: 'Como funciona', href: '#jornada' },
   { label: 'O que dizem',   href: '#depoimentos' },
   { label: 'Contato',       href: '#contato' }
 ])
-
-/* MENU MOBILE */
 const mobileOpen = ref(false)
 function toggleMobile(){ mobileOpen.value = !mobileOpen.value }
 function closeMobile(){ mobileOpen.value = false }
 
-/* ===== Scroll/responsivo ===== */
+/* Utils */
+const clamp01 = (x: number) => Math.min(1, Math.max(0, x))
+const lerp = (a: number, b: number, t: number) => a + (b - a) * t
+const easeInOutSine = (t: number) => -(Math.cos(Math.PI * t) - 1) / 2
+const easeInOutCubic = (t: number) => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3)/2
+const remapClamped = (from: number, to: number, v: number) => clamp01((v - from) / (to - from))
+
+/* Responsivo / scroll */
 let raf = 0
 let io: IntersectionObserver | null = null
-
-const startTxVW = ref(30)
 const isMobile  = ref(false)
+const startTxVW = ref(30)
 
 function computeResponsive() {
   if (typeof window === 'undefined') return
@@ -310,7 +312,7 @@ const tick = () => {
   if (!locked.value) raf = requestAnimationFrame(tick)
 }
 
-/* ===== Repouso ===== */
+/* Repouso */
 const END_PHASE = 0.90
 watch(() => smoothProgress.value, (p) => {
   if (!locked.value && p >= END_PHASE) {
@@ -330,7 +332,7 @@ const onResize = () => {
   updateNavOffset()
 }
 
-/* ===== Vídeo: autoplay + economia ===== */
+/* Vídeo – autoplay robusto + economia */
 function ensureAutoplay(){
   const v = videoEl.value
   if (!v) return
@@ -344,10 +346,7 @@ function mountIO(){
   const v = videoEl.value
   if (!v || typeof IntersectionObserver === 'undefined') return
   io = new IntersectionObserver(entries => {
-    for (const e of entries) {
-      if (e.isIntersecting) v.play().catch(() => {})
-      else v.pause()
-    }
+    for (const e of entries) e.isIntersecting ? v.play().catch(() => {}) : v.pause()
   }, { threshold: 0.15 })
   io.observe(v)
 }
@@ -358,7 +357,6 @@ onMounted(() => {
   readScroll()
   smoothProgress.value = progress.value
   tick()
-
   window.addEventListener('scroll', readScroll, { passive: true })
   window.addEventListener('resize', onResize)
 
@@ -376,7 +374,6 @@ onMounted(() => {
     else if (!locked.value) tick()
   })
 })
-
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', readScroll)
   window.removeEventListener('resize', onResize)
@@ -384,24 +381,14 @@ onBeforeUnmount(() => {
   cancelAnimationFrame(raf)
 })
 
-/* ===== utils ===== */
-const clamp01 = (x: number) => Math.min(1, Math.max(0, x))
-const lerp = (a: number, b: number, t: number) => a + (b - a) * t
-const easeInOutSine = (t: number) => -(Math.cos(Math.PI * t) - 1) / 2
-const easeInOutCubic = (t: number) => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3)/2
-const remapClamped = (from: number, to: number, v: number) => clamp01((v - from) / (to - from))
-
-const TARGET_GUTTER_VW = 5
-const START_DELAY     = 0.14
-
-/* progresso efetivo */
+/* Progresso efetivo */
 const pEff = computed(() => locked.value ? 1 : smoothProgress.value)
 
-/* título responsivo */
+/* Título responsivo */
 const clampRem = (minRem: number, maxRem: number) => `clamp(${minRem}rem, 6vw, ${maxRem}rem)`
-const titleFontSize = computed(() => isMobile.value ? clampRem(2.4, 4.6) : clampRem(2.8, 6.2))
+const titleFontSize = computed(() => isMobile.value ? clampRem(2.4, 4.8) : clampRem(3.0, 6.4))
 
-/* ===== navbar (dark) ===== */
+/* Navbar */
 const navSolid = computed(() => (pEff.value >= 0.30) || (winY.value > 8))
 const navStyle  = computed<CSSProperties>(() => ({
   opacity: clamp01((pEff.value - 0.12) / 0.22),
@@ -431,7 +418,7 @@ const linkStyle = (i: number): CSSProperties => {
   return { filter: `blur(${blurPx.toFixed(2)}px)`, opacity: op, transform: `translate3d(0, ${ty.toFixed(2)}px, 0)`, transition: 'filter 260ms ease, opacity 240ms linear, transform 260ms ease', willChange: 'filter, opacity, transform' }
 }
 
-/* ===== overlays (dark + calor) ===== */
+/* Overlays */
 const overlayStyle = computed<CSSProperties>(() => {
   const start = Math.min(100, Math.max(0, props.overlay)) / 100
   const end = 0.16
@@ -451,30 +438,20 @@ const grainStyle = computed<CSSProperties>(() => ({
   backgroundSize: '160px 160px'
 }))
 
-/* ===== helpers visuais ===== */
+/* Layout helpers */
 const alignTextClass = computed(() => props.alinhamento === 'centro' ? 'text-center' : 'text-left')
 const subBlockClass  = computed(() => props.alinhamento === 'centro' ? 'mx-auto' : '')
 const ctaJustifyClass= computed(() => props.alinhamento === 'centro' ? 'justify-center' : 'justify-start')
 
-/* ===== título: minúsculo, espaçado, offset, halo/sombras ===== */
-const words = computed(() => (props.titulo || '').toLowerCase().trim().split(/\s+/))
+/* Título: somente palavras e espaçador entre elas */
+const words = computed(() => (props.titulo || '')
+  .toLowerCase()
+  .trim()
+  .split(/\s+/)
+)
 
-const titleBlockStyle = computed<CSSProperties>(() => ({
-  transform: `translate3d(${props.titleOffsetVW}vw, 0, 0)`
-}))
-const titleHaloStyle = computed<CSSProperties>(() => ({
-  background:
-    'radial-gradient(120% 120% at 0% 50%, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.28) 38%, rgba(0,0,0,0) 70%)',
-  filter: 'blur(14px)'
-}))
-const titleShadowStyle = computed<CSSProperties>(() => ({
-  textShadow: '0 2px 24px rgba(0,0,0,0.55), 0 1px 6px rgba(0,0,0,0.45)'
-}))
-const subtitleShadowStyle = computed<CSSProperties>(() => ({
-  textShadow: '0 1px 12px rgba(0,0,0,0.5)'
-}))
-
-/* ===== reveals ===== */
+/* Reveals */
+const START_DELAY = 0.14
 const revealWordStyle = (i:number): CSSProperties => {
   const delay = i * 0.08
   const t0 = clamp01((pEff.value - (START_DELAY + delay)) / 0.40)
@@ -494,14 +471,26 @@ const revealStyle = computed<CSSProperties>(() => {
   const t = easeInOutCubic(phase)
   const ty = lerp(18, 0, t)
   const op = lerp(0, 1, t)
-  return {
-    transform: `translate3d(0, ${ty}px, 0)`,
-    opacity: op,
-    transition: 'transform 0.28s ease-out, opacity 0.28s linear'
-  }
+  return { transform: `translate3d(0, ${ty}px, 0)`, opacity: op, transition: 'transform 0.28s ease-out, opacity 0.28s linear' }
 })
 const ctaDelayStyle = computed<CSSProperties>(() => ({
   transitionDelay: `${Math.round(140 * clamp01((pEff.value - (START_DELAY + 0.16)) / 0.50))}ms`
+}))
+
+/* Offset e nitidez do título */
+const titleBlockStyle = computed<CSSProperties>(() => ({
+  transform: `translate3d(${props.titleOffsetVW}vw, 0, 0)`
+}))
+const titleHaloStyle = computed<CSSProperties>(() => ({
+  background:
+    'radial-gradient(120% 120% at 0% 50%, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.28) 38%, rgba(0,0,0,0) 70%)',
+  filter: 'blur(14px)'
+}))
+const titleShadowStyle = computed<CSSProperties>(() => ({
+  textShadow: '0 2px 24px rgba(0,0,0,0.55), 0 1px 6px rgba(0,0,0,0.45)'
+}))
+const subtitleShadowStyle = computed<CSSProperties>(() => ({
+  textShadow: '0 1px 12px rgba(0,0,0,0.5)'
 }))
 </script>
 
