@@ -154,14 +154,14 @@
                 :style="titleHaloStyle"
                 aria-hidden="true"
               />
-              <!-- TÍTULO: Solução 4 implementada -->
+              <!-- TÍTULO: Espaçamento maior entre palavras -->
               <h1
-                class="font-semibold leading-[0.95] lowercase tracking-[0.02em] flex flex-wrap gap-x-[1ch]"
+                class="font-semibold leading-[0.95] lowercase tracking-[0.02em] flex flex-wrap gap-x-[2.2ch]"
                 :style="titleShadowStyle"
               >
                 <template v-for="(w, i) in words" :key="i">
                   <span 
-                    class="inline-block will-change-transform mr-[0.3ch]"
+                    class="inline-block will-change-transform mr-[0.8ch]"
                     :style="revealWordStyle(i)"
                   >
                     <span :style="{ fontSize: titleFontSize }">{{ w }}</span>
