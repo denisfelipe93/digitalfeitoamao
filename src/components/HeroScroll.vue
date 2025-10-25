@@ -154,7 +154,7 @@
                 :style="titleHaloStyle"
                 aria-hidden="true"
               />
-              <!-- TÍTULO: Espaçamento maior entre palavras -->
+              <!-- TÍTULO -->
               <h1
                 class="font-semibold leading-[0.95] lowercase tracking-[0.02em] flex flex-wrap gap-x-[2.2ch]"
                 :style="titleShadowStyle"
@@ -214,7 +214,7 @@ const props = withDefaults(defineProps<{
   titulo: string
   subtitulo?: string
   alinhamento?: 'esquerda' | 'centro'
-  imageSrc: string
+  imageSrc?: string            // <— agora OPCIONAL
   imageAlt?: string
   imageSrcset?: Srcset
   sizes?: string
@@ -227,6 +227,7 @@ const props = withDefaults(defineProps<{
 }>(), {
   subtitulo: "Cuidamos do seu digital com o cuidado, planejamento e impacto. Lapidando sua marca na internet delicadamente, como se fosse à mão.",
   alinhamento: 'esquerda',
+  imageSrc: '',                // <— default vazio
   imageAlt: '',
   imageSrcset: () => ({}),
   sizes: '(max-width:768px) 100vw, 90vw',
@@ -443,12 +444,8 @@ const alignTextClass = computed(() => props.alinhamento === 'centro' ? 'text-cen
 const subBlockClass  = computed(() => props.alinhamento === 'centro' ? 'mx-auto' : '')
 const ctaJustifyClass= computed(() => props.alinhamento === 'centro' ? 'justify-center' : 'justify-start')
 
-/* Título: somente palavras e espaçador entre elas */
-const words = computed(() => (props.titulo || '')
-  .toLowerCase()
-  .trim()
-  .split(/\s+/)
-)
+/* Título */
+const words = computed(() => (props.titulo || '').toLowerCase().trim().split(/\s+/))
 
 /* Reveals */
 const START_DELAY = 0.14

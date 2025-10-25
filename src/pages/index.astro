@@ -4,10 +4,6 @@ import Layout from '../layouts/Layout.astro'
 import Preloader from '../components/Preloader.vue'
 import HeroScroll from '../components/HeroScroll.vue'
 
-// usar assets via import garante path correto no build
-import capa from '../assets/hero/capa.webp?url'
-import poster from '../assets/hero/capa-poster.jpg?url'
-
 import ServicesSection from '../components/ServicesSection.vue'
 import JourneyCreative from '@/components/JourneyCreative.vue'
 import Testimonials from '@/components/Testimonials.vue'
@@ -20,14 +16,12 @@ import Footer from '@/components/Footer.vue'
 
   <Preloader client:load />
 
-  <!-- Hero -->
+  <!-- Hero (vídeo-only) -->
   <HeroScroll
     client:load
     titulo="digital feito à mão"
     subtitulo="Cuidamos do seu digital com o cuidado, planejamento e impacto. Lapidando sua marca na internet delicadamente, como se fosse à mão."
-    imageSrc={capa}
-    poster={poster}
-    videoSources={{ mp4: '/videos/hero.mp4' }}
+    videoSources={{ webm: '/videos/hero.webm', mp4: '/videos/hero.mp4' }}
     overlay={88}
     forceVideo={true}
     titleOffsetVW={-6}
