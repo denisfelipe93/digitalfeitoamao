@@ -1,31 +1,30 @@
 <template>
   <section ref="sectionEl" class="relative h-[220vh] bg-white">
-    <!-- NAVBAR FIXA -->
+    <!-- NAV (vidro escuro) -->
     <nav
       ref="navEl"
       class="fixed inset-x-0 top-0 z-40 transition-all duration-500"
       :style="navStyle"
       @keydown.esc="closeMobile"
     >
-      <!-- fundo vidro -->
       <div
         class="absolute inset-0 backdrop-blur-md bg-black/20 border-b border-white/10 shadow-[0_2px_12px_rgba(0,0,0,0.25)]"
         :class="{ 'bg-black/40 backdrop-blur-xl': navSolid }"
       ></div>
 
-      <!-- conteúdo principal -->
       <div
         class="relative max-w-7xl mx-auto px-5 sm:px-6 md:px-8 lg:px-12
                flex items-center justify-between py-4 md:py-5"
       >
         <a href="#top"
            class="font-sans font-semibold tracking-[0.18em] uppercase text-white
-                  text-[1.05rem] md:text-[1.2rem] transition-all duration-300 hover:text-white/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+                  text-[1.05rem] md:text-[1.2rem] transition-all duration-300 hover:text-white/90
+                  focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
            :style="brandStyle">
           Digital Feito à Mão
         </a>
 
-        <!-- Desktop menu (sem barra no hover) -->
+        <!-- Desktop menu -->
         <ul class="hidden md:flex items-center gap-9 lg:gap-10 font-sans uppercase font-medium text-[0.9rem] tracking-[0.22em]">
           <li v-for="(item, i) in navItems" :key="item.href">
             <a :href="item.href"
@@ -59,7 +58,7 @@
         </button>
       </div>
 
-      <!-- Menu Mobile Premium -->
+      <!-- Menu Mobile (dark) -->
       <transition name="slide-fade">
         <div
           v-if="mobileOpen"
@@ -68,7 +67,6 @@
                  border-l border-white/10 shadow-[0_0_60px_rgba(0,0,0,0.6)]
                  flex flex-col z-50 rounded-l-2xl overflow-hidden"
         >
-          <!-- header -->
           <div class="px-8 pt-8 pb-4 flex items-center justify-between">
             <span class="text-white/70 uppercase tracking-[0.28em] text-xs">Menu</span>
             <button @click="closeMobile"
@@ -79,7 +77,6 @@
             </button>
           </div>
 
-          <!-- nav items centralizados -->
           <div class="flex-1 px-8 pb-8 flex flex-col items-center justify-center">
             <ul class="w-full max-w-xs text-center space-y-2 text-base uppercase tracking-[0.22em] font-medium text-white/90">
               <li v-for="item in navItems" :key="item.href">
@@ -94,16 +91,7 @@
             </ul>
           </div>
 
-          <!-- socials + footer -->
           <div class="px-8 py-6 border-t border-white/10 bg-white/5">
-            <div class="flex items-center justify-center gap-3 mb-3">
-              <a v-for="s in social" :key="s.href" :href="s.href" target="_blank" rel="noopener"
-                 class="w-10 h-10 rounded-full border border-white/15 bg-white/5 hover:bg-white/15 text-white/80 hover:text-white
-                        flex items-center justify-center transition"
-                 :aria-label="s.label">
-                <component :is="s.icon"></component>
-              </a>
-            </div>
             <p class="text-center text-[11px] text-white/60">
               © {{ new Date().getFullYear() }} Digital Feito à Mão
             </p>
@@ -112,11 +100,31 @@
       </transition>
     </nav>
 
-    <!-- HERO -->
+    <!-- HERO sticky -->
     <div class="sticky top-0 h-[100vh] overflow-hidden text-white">
       <!-- mídia -->
       <div class="absolute inset-0 -z-10">
-        <picture v-if="!useVideo">
+        <!-- Vídeo (quando disponível) -->
+        <video
+          v-if="useVideo"
+          ref="videoEl"
+          class="h-full w-full object-cover"
+          autoplay
+          muted
+          playsinline
+          loop
+          preload="metadata"
+          :poster="poster || ''"
+          disablepictureinpicture
+          controlslist="nodownload noplaybackrate noremoteplayback"
+          aria-hidden="true"
+        >
+          <source v-if="videoSources?.webm" :src="videoSources.webm" type="video/webm" />
+          <source v-if="videoSources?.mp4"  :src="videoSources.mp4"  type="video/mp4"  />
+        </video>
+
+        <!-- Fallback imagem (reduced-motion ou sem vídeo) -->
+        <picture v-else>
           <source v-if="imageSrcset?.webp" :srcset="imageSrcset.webp" type="image/webp" />
           <img
             class="h-full w-full object-cover"
@@ -128,30 +136,45 @@
             decoding="async"
           />
         </picture>
-        <video v-else class="h-full w-full object-cover" autoplay muted loop playsinline :poster="poster || ''">
-          <source v-if="videoSources?.webm" :src="videoSources.webm" type="video/webm" />
-          <source v-if="videoSources?.mp4"  :src="videoSources.mp4"  type="video/mp4" />
-        </video>
 
         <!-- overlays -->
         <div class="absolute inset-0" :style="overlayStyle" />
-        <div class="absolute inset-0 pointer-events-none bg-[radial-gradient(transparent_60%,rgba(0,0,0,0.25))]" />
-        <div class="absolute inset-0 pointer-events-none" :style="leftVignetteStyle" />
+        <div class="absolute inset-0 pointer-events-none" :style="cinematicVignetteStyle" />
         <div class="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/30 to-transparent" />
       </div>
 
       <!-- conteúdo -->
-      <div class="h-full w-full pt-[64px] md:pt-[72px]">
+      <div class="relative h-full w-full pt-[64px] md:pt-[72px]">
+        <!-- grain (mix-blend/opacity via class para evitar conflito TS) -->
+        <div class="absolute inset-0 opacity-[0.16] mix-blend-overlay" :style="grainStyle"></div>
+
         <div class="max-w-7xl mx-auto h-full px-6 md:px-8 lg:px-12 flex items-center">
           <div class="w-full" :class="alignTextClass">
-            <div class="will-change-transform" :style="titleStyle">
-              <h1 class="font-semibold leading-[0.95] tracking-[-0.01em]" :style="{ fontSize: titleFontSize }">
-                {{ titulo }}
+            <!-- bloco do título com offset e halo -->
+            <div class="relative inline-block" :style="titleBlockStyle">
+              <div
+                class="absolute -inset-y-6 -left-6 right-0 rounded-[32px] pointer-events-none"
+                :style="titleHaloStyle"
+                aria-hidden="true"
+              ></div>
+
+              <h1 class="font-semibold leading-[0.95] tracking-[0.01em] lowercase" :style="titleShadowStyle">
+                <span
+                  v-for="(w, i) in words"
+                  :key="i"
+                  class="inline-block mr-[0.35ch] will-change-transform"
+                  :style="revealWordStyle(i)"
+                >
+                  <span :style="{ fontSize: titleFontSize }">{{ w }}</span>
+                </span>
               </h1>
             </div>
 
             <div class="mt-7 md:mt-9 max-w-2xl" :class="subBlockClass" :style="revealStyle">
-              <p v-if="subtitulo" class="text-white/90 text-base md:text-lg">{{ subtitulo }}</p>
+              <p v-if="subtitulo" class="text-white/90 text-base md:text-lg" :style="subtitleShadowStyle">
+                {{ subtitulo }}
+              </p>
+
               <div v-if="ctaPrimaria" class="mt-6 flex flex-wrap gap-3" :class="ctaJustifyClass">
                 <a :href="ctaPrimaria.href" :style="ctaDelayStyle"
                    class="rounded-2xl px-5 py-3 text-sm md:text-base font-medium bg-white text-black hover:opacity-90 transition">
@@ -161,30 +184,32 @@
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- hint de rolagem – some quando travar -->
-      <div
-        :class="[
-          'absolute bottom-6 left-1/2 -translate-x-1/2 text-xs tracking-widest uppercase transition-opacity duration-500',
-          locked ? 'opacity-0 pointer-events-none' : 'opacity-80'
-        ]"
-      >
-        scroll down
+        <!-- hint -->
+        <div
+          :class="[
+            'absolute bottom-6 left-1/2 -translate-x-1/2 text-xs tracking-widest uppercase transition-opacity duration-500 text-white/70',
+            locked ? 'opacity-0 pointer-events-none' : 'opacity-80'
+          ]"
+        >
+          scroll down
+        </div>
       </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref, computed, watch, h } from 'vue'
+import { onMounted, onBeforeUnmount, ref, computed, watch } from 'vue'
+import type { CSSProperties } from 'vue'
 
+/* ===== Tipagens ===== */
 type Srcset = { webp?: string }
 type FontesVideo = { webm?: string; mp4?: string }
 type Cta = { rotulo: string; href: string }
 type NavItem = { label: string; href: string }
-type Social = { label: string; href: string; icon: any }
 
+/* ===== Props ===== */
 const props = withDefaults(defineProps<{
   titulo: string
   subtitulo?: string
@@ -197,6 +222,10 @@ const props = withDefaults(defineProps<{
   poster?: string
   ctaPrimaria?: Cta
   overlay?: number
+  /** força usar vídeo mesmo se o SO estiver com reduced-motion */
+  forceVideo?: boolean
+  /** desloca o bloco do título (negativo p/ esquerda) */
+  titleOffsetVW?: number
 }>(), {
   subtitulo: "Cuidamos do seu digital com o cuidado, planejamento e impacto. Lapidando sua marca na internet delicadamente, como se fosse à mão.",
   alinhamento: 'esquerda',
@@ -206,24 +235,30 @@ const props = withDefaults(defineProps<{
   videoSources: () => ({}),
   poster: '',
   ctaPrimaria: () => ({ rotulo: 'Fale conosco', href: '#contato' }),
-  overlay: 82
+  overlay: 82,
+  forceVideo: false,
+  titleOffsetVW: -6
 })
 
-/* ===== preferências e mídia ===== */
+/* ===== Preferências e mídia ===== */
 const prefersReduced = typeof window !== 'undefined'
   ? window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
   : false
-const useVideo = computed(() => !!(props.videoSources?.webm || props.videoSources?.mp4) && !prefersReduced)
+const useVideo = computed(() =>
+  !!(props.videoSources?.webm || props.videoSources?.mp4) && (!prefersReduced || props.forceVideo)
+)
 
-/* ===== refs ===== */
+/* ===== Refs/estado ===== */
 const sectionEl = ref<HTMLElement | null>(null)
 const navEl = ref<HTMLElement | null>(null)
+const videoEl = ref<HTMLVideoElement | null>(null)
+
 const progress = ref(0)
 const smoothProgress = ref(0)
 const winY = ref(0)
-const locked = ref(false) // trava pós-repouso
+const locked = ref(false)
 
-/* ===== navegação ===== */
+/* ===== Navegação ===== */
 const navItems = ref<NavItem[]>([
   { label: 'Serviços',      href: '#services' },
   { label: 'Como funciona', href: '#jornada' },
@@ -231,35 +266,16 @@ const navItems = ref<NavItem[]>([
   { label: 'Contato',       href: '#contato' }
 ])
 
-/* social icons inline (SVGs mínimos) */
-const IconInstagram = () => h('svg', { xmlns:'http://www.w3.org/2000/svg', viewBox:'0 0 24 24', class:'w-5 h-5', fill:'currentColor' }, [
-  h('path', { d:'M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm0 2a3 3 0 00-3 3v10a3 3 0 003 3h10a3 3 0 003-3V7a3 3 0 00-3-3H7z' }),
-  h('path', { d:'M12 8a4 4 0 110 8 4 4 0 010-8zm5-1a1 1 0 110 2 1 1 0 010-2z' })
-])
-const IconX = () => h('svg', { xmlns:'http://www.w3.org/2000/svg', viewBox:'0 0 24 24', class:'w-5 h-5', fill:'currentColor' }, [
-  h('path', { d:'M3 3h4.7l5.2 7.1L18.4 3H21l-7.2 9.8L21 21h-4.7l-5.5-7.4L5.6 21H3l7.5-10L3 3z' })
-])
-const IconYouTube = () => h('svg', { xmlns:'http://www.w3.org/2000/svg', viewBox:'0 0 24 24', class:'w-5 h-5', fill:'currentColor' }, [
-  h('path', { d:'M23 8.5a4 4 0 00-2.8-2.8C18.4 5 12 5 12 5s-6.4 0-8.2.7A4 4 0 001 8.5 41.7 41.7 0 000 12a41.7 41.7 0 001 3.5 4 4 0 002.8 2.8C5.6 19 12 19 12 19s6.4 0 8.2-.7A4 4 0 0023 15.5 41.7 41.7 0 0024 12a41.7 41.7 0 00-1-3.5zM10 15V9l5 3-5 3z' })
-])
-const IconGitHub = () => h('svg', { xmlns:'http://www.w3.org/2000/svg', viewBox:'0 0 24 24', class:'w-5 h-5', fill:'currentColor' }, [
-  h('path', { d:'M12 2a10 10 0 00-3.2 19.5c.5.1.7-.2.7-.5v-1.8c-3 .7-3.7-1.4-3.7-1.4-.5-1.3-1.2-1.7-1.2-1.7-1-.7.1-.7.1-.7 1.1.1 1.7 1.1 1.7 1.1 1 .1.8-.8.8-.8-.7-.1-1.3-.4-1.6-.9 0 0-.7-.5.1-.5 0 0 .8.1 1.7 1 .5-.2 1.2-.4 1.9-.4s1.4.1 1.9.4c.9-.9 1.7-1 1.7-1 .8 0 .1.5.1.5-.3.5-.9.8-1.6.9 0 0 .2.9.8.8 0 0 .6-1 1.7-1.1 0 0 1.1 0 .1.7 0 0-.7.4-1.2 1.7 0 0-.7 2.1-3.7 1.4v1.8c0 .3.2.6.7.5A10 10 0 0012 2z' })
-])
-const social = ref<Social[]>([
-  { label:'Instagram', href:'https://instagram.com/denisc0de', icon: IconInstagram },
-  { label:'X (Twitter)', href:'https://x.com/DenisCode_', icon: IconX },
-  { label:'YouTube', href:'https://youtube.com/@odeniscode', icon: IconYouTube },
-  { label:'GitHub', href:'https://github.com/denisfelipe93', icon: IconGitHub }
-])
-
-/* ===== MENU MOBILE ===== */
+/* MENU MOBILE */
 const mobileOpen = ref(false)
 function toggleMobile(){ mobileOpen.value = !mobileOpen.value }
 function closeMobile(){ mobileOpen.value = false }
 
-/* ===== leitura do scroll + responsive ===== */
+/* ===== Scroll/responsivo ===== */
 let raf = 0
-const startTxVW = ref(30)  // deslocamento inicial dinâmico
+let io: IntersectionObserver | null = null
+
+const startTxVW = ref(30)
 const isMobile  = ref(false)
 
 function computeResponsive() {
@@ -270,14 +286,12 @@ function computeResponsive() {
   else if (w < 1024){ startTxVW.value = 24; isMobile.value = false }
   else              { startTxVW.value = 30; isMobile.value = false }
 }
-
 function updateNavOffset() {
   const h = (navEl.value?.offsetHeight ?? 72) + 16
   if (typeof document !== 'undefined') {
     document.documentElement.style.setProperty('--nav-offset', `${h}px`)
   }
 }
-
 const readScroll = () => {
   if (!sectionEl.value || locked.value) return
   const rect = sectionEl.value.getBoundingClientRect()
@@ -287,7 +301,6 @@ const readScroll = () => {
   progress.value = passed / total
   if (typeof window !== 'undefined') winY.value = window.scrollY || 0
 }
-
 const tick = () => {
   const damping = 0.05
   const maxStep = 0.012
@@ -297,7 +310,7 @@ const tick = () => {
   if (!locked.value) raf = requestAnimationFrame(tick)
 }
 
-/* trava ao atingir o repouso */
+/* ===== Repouso ===== */
 const END_PHASE = 0.90
 watch(() => smoothProgress.value, (p) => {
   if (!locked.value && p >= END_PHASE) {
@@ -311,11 +324,32 @@ watch(() => smoothProgress.value, (p) => {
     cancelAnimationFrame(raf)
   }
 })
-
 const onResize = () => {
   readScroll()
   computeResponsive()
   updateNavOffset()
+}
+
+/* ===== Vídeo: autoplay + economia ===== */
+function ensureAutoplay(){
+  const v = videoEl.value
+  if (!v) return
+  v.muted = true
+  ;(v as any).playsInline = true
+  const tryPlay = () => v.play().catch(() => {})
+  if (v.readyState >= 2) tryPlay()
+  else v.addEventListener('loadeddata', tryPlay, { once: true })
+}
+function mountIO(){
+  const v = videoEl.value
+  if (!v || typeof IntersectionObserver === 'undefined') return
+  io = new IntersectionObserver(entries => {
+    for (const e of entries) {
+      if (e.isIntersecting) v.play().catch(() => {})
+      else v.pause()
+    }
+  }, { threshold: 0.15 })
+  io.observe(v)
 }
 
 onMounted(() => {
@@ -324,12 +358,29 @@ onMounted(() => {
   readScroll()
   smoothProgress.value = progress.value
   tick()
+
   window.addEventListener('scroll', readScroll, { passive: true })
   window.addEventListener('resize', onResize)
+
+  if (videoEl.value && useVideo.value) {
+    ensureAutoplay()
+    mountIO()
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    if (videoEl.value) {
+      if (document.hidden) videoEl.value.pause()
+      else if (useVideo.value) videoEl.value.play().catch(() => {})
+    }
+    if (document.hidden) cancelAnimationFrame(raf)
+    else if (!locked.value) tick()
+  })
 })
+
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', readScroll)
   window.removeEventListener('resize', onResize)
+  if (io) { io.disconnect(); io = null }
   cancelAnimationFrame(raf)
 })
 
@@ -343,73 +394,32 @@ const remapClamped = (from: number, to: number, v: number) => clamp01((v - from)
 const TARGET_GUTTER_VW = 5
 const START_DELAY     = 0.14
 
-/* progresso efetivo: se travado, fica 1 (estado final) */
+/* progresso efetivo */
 const pEff = computed(() => locked.value ? 1 : smoothProgress.value)
 
-/* font-size do título responsivo */
+/* título responsivo */
 const clampRem = (minRem: number, maxRem: number) => `clamp(${minRem}rem, 6vw, ${maxRem}rem)`
-const titleFontSize = computed(() => isMobile.value ? clampRem(2.2, 4.8) : clampRem(2.6, 6.0))
+const titleFontSize = computed(() => isMobile.value ? clampRem(2.4, 4.6) : clampRem(2.8, 6.2))
 
-/* ===== efeitos ===== */
-const titleStyle = computed(() => {
-  const phase = remapClamped(START_DELAY, 0.90, pEff.value)
-  const p = easeInOutSine(phase)
-  const tx = lerp(startTxVW.value, -TARGET_GUTTER_VW, p)
-  const sc = lerp(1.002, 0.978, p)
-  return { transform: `translate3d(${tx}vw,0,0) scale(${sc})`, transition: 'transform 0.30s ease-out' }
-})
-
-const revealStyle = computed(() => {
-  const phase = remapClamped(START_DELAY + 0.16, 0.80, pEff.value)
-  const t = easeInOutCubic(phase)
-  const ty = lerp(18, 0, t)
-  const op = lerp(0, 1, t)
-  return { transform: `translate3d(0, ${ty}px, 0)`, opacity: `${op}`, transition: 'transform 0.28s ease-out, opacity 0.28s linear' }
-})
-const ctaDelayStyle = computed(() => ({ transitionDelay: `${Math.round(140 * clamp01((pEff.value - (START_DELAY + 0.16)) / 0.50))}ms` }))
-
-/* ===== navbar ===== */
+/* ===== navbar (dark) ===== */
 const navSolid = computed(() => (pEff.value >= 0.30) || (winY.value > 8))
-const navStyle  = computed(() => ({
-  opacity: clamp01((pEff.value - 0.12) / 0.22).toFixed(3),
+const navStyle  = computed<CSSProperties>(() => ({
+  opacity: clamp01((pEff.value - 0.12) / 0.22),
   backgroundColor: navSolid.value ? 'rgba(0,0,0,0.46)' : 'transparent',
   boxShadow: navSolid.value ? '0 6px 28px rgba(0,0,0,0.32)' : 'none'
 }))
-
-/* ===== overlays ===== */
-const overlayStyle = computed(() => {
-  const start = Math.min(100, Math.max(0, props.overlay)) / 100
-  const end = 0.16
-  const phase = remapClamped(0, 1, pEff.value)
-  const alpha = lerp(start, end, easeInOutSine(phase))
-  return { backgroundColor: `rgba(0,0,0,${alpha})` }
-})
-const leftVignetteStyle = computed(() => {
-  const t = remapClamped(0, 0.65, pEff.value)
-  const a = lerp(0.38, 0.0, easeInOutSine(t))
-  const bg = `radial-gradient(60vw 85vh at 10% 50%, rgba(0,0,0,${a}) 0%, rgba(0,0,0,0) 60%)`
-  return { background: bg }
-})
-
-/* ===== helpers visuais ===== */
-const alignTextClass = computed(() => props.alinhamento === 'centro' ? 'text-center' : 'text-left')
-const subBlockClass  = computed(() => props.alinhamento === 'centro' ? 'mx-auto' : '')
-const ctaJustifyClass= computed(() => props.alinhamento === 'centro' ? 'justify-center' : 'justify-start')
-
-/* ===== navbar animações ===== */
-const LINKS_START = 0.18, LINKS_END = 0.42, LINKS_STAGGER = 0.045
-const instantReveal = computed(() => prefersReduced)
-
-const brandStyle = computed(() => {
+const instantReveal = computed(() => prefersReduced && !props.forceVideo)
+const brandStyle = computed<CSSProperties>(() => {
   if (instantReveal.value) return { filter: 'none', opacity: 1, transform: 'none' }
   const t0 = remapClamped(0.16, 0.32, pEff.value)
   const t  = easeInOutCubic(t0)
   const blurPx = lerp(10, 0, t)
   const op     = lerp(0, 1, t)
   const ty     = lerp(8, 0, t)
-  return { filter: `blur(${blurPx.toFixed(2)}px)`, opacity: op.toFixed(3), transform: `translate3d(0, ${ty.toFixed(2)}px, 0)`, transition: 'filter 300ms ease, opacity 240ms linear, transform 300ms ease', willChange: 'filter, opacity, transform' }
+  return { filter: `blur(${blurPx.toFixed(2)}px)`, opacity: op, transform: `translate3d(0, ${ty.toFixed(2)}px, 0)`, transition: 'filter 300ms ease, opacity 240ms linear, transform 300ms ease', willChange: 'filter, opacity, transform' }
 })
-const linkStyle = (i: number) => {
+const LINKS_START = 0.18, LINKS_END = 0.42, LINKS_STAGGER = 0.045
+const linkStyle = (i: number): CSSProperties => {
   if (instantReveal.value) return { filter: 'none', opacity: 1, transform: 'none' }
   const s = LINKS_START + i * LINKS_STAGGER
   const e = LINKS_END   + i * LINKS_STAGGER
@@ -418,8 +428,81 @@ const linkStyle = (i: number) => {
   const blurPx = lerp(8, 0, t)
   const op     = lerp(0, 1, t)
   const ty     = lerp(6, 0, t)
-  return { filter: `blur(${blurPx.toFixed(2)}px)`, opacity: op.toFixed(3), transform: `translate3d(0, ${ty.toFixed(2)}px, 0)`, transition: 'filter 260ms ease, opacity 240ms linear, transform 260ms ease', willChange: 'filter, opacity, transform' }
+  return { filter: `blur(${blurPx.toFixed(2)}px)`, opacity: op, transform: `translate3d(0, ${ty.toFixed(2)}px, 0)`, transition: 'filter 260ms ease, opacity 240ms linear, transform 260ms ease', willChange: 'filter, opacity, transform' }
 }
+
+/* ===== overlays (dark + calor) ===== */
+const overlayStyle = computed<CSSProperties>(() => {
+  const start = Math.min(100, Math.max(0, props.overlay)) / 100
+  const end = 0.16
+  const phase = remapClamped(0, 1, pEff.value)
+  const alpha = lerp(start, end, easeInOutSine(phase))
+  const mix = `linear-gradient(0deg, rgba(255,236,209,${alpha*0.24}), rgba(0,0,0,${alpha*1.05}))`
+  return { backgroundImage: mix }
+})
+const cinematicVignetteStyle = computed<CSSProperties>(() => ({
+  background: 'radial-gradient(transparent 60%, rgba(0,0,0,0.25)), radial-gradient(60vw 85vh at 10% 50%, rgba(0,0,0,0.28) 0%, rgba(0,0,0,0) 60%)'
+}))
+const grainStyle = computed<CSSProperties>(() => ({
+  backgroundImage:
+    'url("data:image/svg+xml;utf8,' +
+    encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(#n)' opacity='0.9'/></svg>`) +
+    '")',
+  backgroundSize: '160px 160px'
+}))
+
+/* ===== helpers visuais ===== */
+const alignTextClass = computed(() => props.alinhamento === 'centro' ? 'text-center' : 'text-left')
+const subBlockClass  = computed(() => props.alinhamento === 'centro' ? 'mx-auto' : '')
+const ctaJustifyClass= computed(() => props.alinhamento === 'centro' ? 'justify-center' : 'justify-start')
+
+/* ===== título: minúsculo, espaçado, offset, halo/sombras ===== */
+const words = computed(() => (props.titulo || '').toLowerCase().trim().split(/\s+/))
+
+const titleBlockStyle = computed<CSSProperties>(() => ({
+  transform: `translate3d(${props.titleOffsetVW}vw, 0, 0)`
+}))
+const titleHaloStyle = computed<CSSProperties>(() => ({
+  background:
+    'radial-gradient(120% 120% at 0% 50%, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.28) 38%, rgba(0,0,0,0) 70%)',
+  filter: 'blur(14px)'
+}))
+const titleShadowStyle = computed<CSSProperties>(() => ({
+  textShadow: '0 2px 24px rgba(0,0,0,0.55), 0 1px 6px rgba(0,0,0,0.45)'
+}))
+const subtitleShadowStyle = computed<CSSProperties>(() => ({
+  textShadow: '0 1px 12px rgba(0,0,0,0.5)'
+}))
+
+/* ===== reveals ===== */
+const revealWordStyle = (i:number): CSSProperties => {
+  const delay = i * 0.08
+  const t0 = clamp01((pEff.value - (START_DELAY + delay)) / 0.40)
+  const t  = easeInOutCubic(t0)
+  const op = lerp(0, 1, t)
+  const ty = lerp(14, 0, t)
+  const blur = (1 - t) * 8
+  return {
+    opacity: op,
+    transform: `translate3d(0, ${ty}px, 0)`,
+    filter: `blur(${blur.toFixed(2)}px)`,
+    transition: 'transform 320ms ease, filter 320ms ease, opacity 260ms linear'
+  }
+}
+const revealStyle = computed<CSSProperties>(() => {
+  const phase = remapClamped(START_DELAY + 0.16, 0.80, pEff.value)
+  const t = easeInOutCubic(phase)
+  const ty = lerp(18, 0, t)
+  const op = lerp(0, 1, t)
+  return {
+    transform: `translate3d(0, ${ty}px, 0)`,
+    opacity: op,
+    transition: 'transform 0.28s ease-out, opacity 0.28s linear'
+  }
+})
+const ctaDelayStyle = computed<CSSProperties>(() => ({
+  transitionDelay: `${Math.round(140 * clamp01((pEff.value - (START_DELAY + 0.16)) / 0.50))}ms`
+}))
 </script>
 
 <style scoped>

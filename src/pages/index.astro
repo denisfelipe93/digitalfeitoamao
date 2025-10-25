@@ -3,7 +3,11 @@
 import Layout from '../layouts/Layout.astro'
 import Preloader from '../components/Preloader.vue'
 import HeroScroll from '../components/HeroScroll.vue'
+
+// usar assets via import garante path correto no build
 import capa from '../assets/hero/capa.webp?url'
+import poster from '../assets/hero/capa-poster.jpg?url'
+
 import ServicesSection from '../components/ServicesSection.vue'
 import JourneyCreative from '@/components/JourneyCreative.vue'
 import Testimonials from '@/components/Testimonials.vue'
@@ -12,23 +16,23 @@ import Footer from '@/components/Footer.vue'
 ---
 
 <Layout title="Direção criativa — branding, identidade e conteúdo">
-  <!-- âncora para o link do logotipo/brand -->
   <div id="top"></div>
 
-  <!-- Preloader -->
   <Preloader client:load />
 
-  <!-- Hero (sem lockOnce) -->
+  <!-- Hero -->
   <HeroScroll
-    titulo="digital feito a mão"
-    imageSrc={capa}
-    imageAlt="Equipe de filmagem em jardim durante uma produção"
-    imageSrcset={{ webp: capa }}
-    overlay={82}
-    client:visible
-  />
+  client:load
+  titulo="Digital Feito À Mão"
+  subtitulo="Estúdio criativo artesanal com execução premium."
+  imageSrc={capa}
+  poster={poster}
+  videoSources={{ mp4: '/videos/hero.mp4' }}
+  overlay={88}
+  forceVideo={true}
+  titleOffsetVW={-6}
+/>
 
-  <!-- Seções com IDs para os links do menu -->
   <section id="services">
     <ServicesSection client:visible />
   </section>
