@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { services } from '@/data/services'
 
 const props = withDefaults(defineProps<{
@@ -19,6 +19,9 @@ const visibleServices = computed(() =>
   expanded.value ? services : services.slice(0, props.initialVisible)
 )
 
+// 🔥 VALOR DO RESPIRO - ajuste este número (comece com 40)
+const breathingSpace = ref(60)
+
 function toggleExpanded() {
   const was = expanded.value
   expanded.value = !expanded.value
@@ -26,11 +29,34 @@ function toggleExpanded() {
     document.getElementById('services')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 }
+
+function updateNavHeightVar() {
+  const nav = document.querySelector('nav')
+  const h = nav?.clientHeight || 88
+  document.documentElement.style.setProperty('--nav-h', `${h}px`)
+  // 🔥 Adiciona o respiro ao cálculo da altura total
+  document.documentElement.style.setProperty('--total-offset', `${h + breathingSpace.value}px`)
+}
+
+onMounted(() => {
+  updateNavHeightVar()
+  window.addEventListener('resize', updateNavHeightVar)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateNavHeightVar)
+})
 </script>
 
 <template>
-  <!-- Removi scroll-mt-28; coloquei padding direto no section pra evitar colapso -->
-  <section id="services" class="relative bg-white pt-12 sm:pt-14 md:pt-16">
+  <!-- 🔥 Âncora com offset combinado (navbar + respiro) -->
+  <span 
+    id="services" 
+    class="services-anchor" 
+    aria-hidden="true"
+  ></span>
+
+  <section class="relative bg-white pt-12 sm:pt-14 md:pt-16">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <h2 class="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-black">
         SERVIÇOS
@@ -46,7 +72,6 @@ function toggleExpanded() {
                    border border-zinc-200/80 px-5 sm:px-7 md:px-10 py-7 md:py-10
                    transition-all duration-300 ease-out
                    hover:scale-[1.02] hover:z-10 hover:shadow-xl hover:shadow-black/5 hover:card-breathe"
-            :aria-label="`Serviço ${String(item.id).padStart(2, '0')}: ${item.title}`"
           >
             <div class="grid grid-cols-12 items-start gap-4 md:gap-4">
               <div class="col-span-2 md:col-span-1">
@@ -116,10 +141,45 @@ function toggleExpanded() {
 </template>
 
 <style scoped>
-@keyframes breathe { 0%{transform:scale(1.02)} 50%{transform:scale(1.027)} 100%{transform:scale(1.02)} }
-.card-breathe { animation: breathe 1.5s ease-in-out infinite; transform-origin:center; }
-@media (prefers-reduced-motion: reduce){ .card-breathe{ animation:none !important } }
-.fade-list-enter-active, .fade-list-leave-active { transition: all .25s ease; }
-.fade-list-enter-from { opacity: 0; transform: translateY(8px); }
-.fade-list-leave-to   { opacity: 0; transform: translateY(-8px); }
+.services-anchor {
+  display: block;
+  position: relative;
+  /* 🔥 OFFSET COMBINADO: altura do navbar + respiro extra */
+  top: calc(-1 * var(--total-offset, 128px)); /* 88px (nav) + 40px (respiro) */
+  height: 0;
+  width: 0;
+  visibility: hidden;
+}
+
+@keyframes breathe { 
+  0% { transform: scale(1.02); } 
+  50% { transform: scale(1.027); } 
+  100% { transform: scale(1.02); } 
+}
+
+.card-breathe { 
+  animation: breathe 1.5s ease-in-out infinite; 
+  transform-origin: center; 
+}
+
+@media (prefers-reduced-motion: reduce) { 
+  .card-breathe { 
+    animation: none !important; 
+  } 
+}
+
+.fade-list-enter-active, 
+.fade-list-leave-active { 
+  transition: all .25s ease; 
+}
+
+.fade-list-enter-from { 
+  opacity: 0; 
+  transform: translateY(8px); 
+}
+
+.fade-list-leave-to { 
+  opacity: 0; 
+  transform: translateY(-8px); 
+}
 </style>
