@@ -148,7 +148,7 @@
           <div class="w-full" :class="alignTextClass">
 
             <!-- bloco do título com offset e halo -->
-            <div class="relative inline-block max-w-[min(92vw,40ch)]" :style="titleBlockStyle">
+            <div class="relative inline-block max-w-[min(92vw,100ch)]" :style="titleBlockStyle">
               <div
                 class="absolute -inset-y-6 -left-6 right-0 rounded-[32px] pointer-events-none"
                 :style="titleHaloStyle"
