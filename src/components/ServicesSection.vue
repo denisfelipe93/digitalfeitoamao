@@ -34,7 +34,6 @@ function setupObserver() {
   )
   listEl.value?.querySelectorAll<HTMLElement>('[data-reveal]:not(.is-in)').forEach(el => io!.observe(el))
 }
-
 onMounted(() => setupObserver())
 
 async function toggleMore() {
@@ -87,7 +86,7 @@ async function toggleMore() {
 
         <!-- Lista -->
         <div class="lg:col-span-8 relative">
-          <!-- linha da timeline (só desktop) -->
+          <!-- linha da timeline (somente desktop) -->
           <div class="pointer-events-none absolute left-[22px] top-0 bottom-0 hidden lg:block">
             <div class="h-full w-px bg-gradient-to-b from-transparent via-zinc-200 to-transparent"></div>
           </div>
@@ -102,26 +101,29 @@ async function toggleMore() {
                            shadow-[0_1px_0_rgba(0,0,0,0.04)]
                            md:transition-all md:duration-300 md:hover:-translate-y-0.5 md:hover:shadow-xl md:hover:shadow-black/5"
               >
-                <!-- MOBILE-FIRST GRID -->
+                <!-- GRID mobile-first -->
                 <div class="grid grid-cols-[38px_1fr] md:grid-cols-[52px_1fr_300px] gap-3 sm:gap-4 md:gap-6 items-start">
-                  <!-- badge -->
-                  <div class="relative pt-0.5">
+                  <!-- Badge + conector -->
+                  <div class="relative pt-0.5 overflow-hidden">
                     <span class="inline-flex h-9 w-9 sm:h-10 sm:w-10 md:h-12 md:w-12 items-center justify-center rounded-full
                                    bg-zinc-900 text-white text-[11px] sm:text-xs md:text-sm font-semibold select-none
                                    shadow-[inset_0_1px_0_rgba(255,255,255,.12)]">
                       {{ String(s.id).padStart(2,'0') }}
                     </span>
-                    <span class="hidden lg:block absolute left-[20px] sm:left-[22px] md:left-[25px] top-10 bottom-[-24px] w-px bg-zinc-200/90"></span>
+                    <!-- CONECTOR (desktop) começa abaixo do círculo — sem “pirulito” -->
+                    <span
+                      aria-hidden="true"
+                      class="hidden md:block pointer-events-none
+                             absolute left-[26px] top-14 bottom-[-28px] w-px bg-zinc-200/80">
+                    </span>
                   </div>
 
-                  <!-- título + chips -->
+                  <!-- Título + chips -->
                   <div class="min-w-0">
                     <h3 class="font-serif text-[20px] sm:text-[24px] md:text-[32px] leading-[1.2] md:leading-[1.15]
                                tracking-[-0.01em] text-[var(--ink)] [text-wrap:balance]">
                       {{ s.title }}
                     </h3>
-
-                    <!-- chips: toque confortável + wrap bonito -->
                     <ul class="mt-3 flex flex-wrap gap-1.5 sm:gap-2">
                       <li
                         v-for="(t,i) in s.tags" :key="i"
@@ -134,14 +136,13 @@ async function toggleMore() {
                     </ul>
                   </div>
 
-                  <!-- descrição: NO MOBILE vira uma NOVA LINHA e ocupa as 2 colunas -->
+                  <!-- Descrição: no mobile ocupa as 2 colunas; no desktop vai pra direita e centraliza -->
                   <p class="col-span-2 md:col-span-1 md:justify-self-end md:self-center md:max-w-[36ch]
                             text-[14.5px] sm:text-[15px] text-zinc-800 leading-relaxed md:pl-2 mt-3 md:mt-0">
                     {{ s.description }}
                   </p>
                 </div>
 
-                <!-- halo/foco só desktop -->
                 <span class="hidden md:block absolute inset-0 rounded-2xl md:rounded-3xl ring-0 ring-zinc-900/0 transition
                              group-hover:ring-1 group-hover:ring-zinc-900/10
                              group-focus-within:ring-1 group-focus-within:ring-zinc-900/15"></span>
@@ -178,7 +179,7 @@ async function toggleMore() {
 .reveal.is-in{
   opacity:1;
   transform:none;
-  transition:opacity .45s cubic-bezier(.22,.61,.36,1),transform .45s cubic-bezier(.22,.61,.36,1)
+  transition:opacity .45s cubic-bezier(.22,.61,.36,1),transform .45s cubic-bezier(.22,.61,.36,1);
 }
 @media (prefers-reduced-motion: reduce){
   .reveal{ opacity:1 !important; transform:none !important; }
