@@ -1,6 +1,7 @@
-<!-- src/components/ContactSection.vue -->
+<!-- src/components/ContactWhats.vue -->
 <template>
-  <section id="contact" class="bg-white">
+  <!-- ❌ removido id="contact" para não conflitar com <section id="contato"> do index.astro -->
+  <section class="bg-white">
     <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
       <!-- Título -->
       <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold leading-tight tracking-tight text-neutral-900">
@@ -13,10 +14,7 @@
                shadow-[0_1px_0_#0000000d,0_1px_3px_#0000000a]
                transition-transform motion-safe:hover:-translate-y-px"
       >
-        <!-- GRID
-             col1 = conteúdo; col2 = CTA
-             row1 = conteúdo; row2 = redes
-             CTA ocupa col2 + row-span-2 para centralizar no card inteiro -->
+        <!-- GRID -->
         <div class="grid gap-8 md:grid-cols-[1fr_auto] md:grid-rows-[auto_auto]">
           <!-- Conteúdo (col1,row1) -->
           <div class="space-y-3">
@@ -51,7 +49,6 @@
                      focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900/40"
             >
               <span>Chat via WhatsApp</span>
-              <!-- setinha ↗ -->
               <svg
                 viewBox="0 0 24 24" aria-hidden="true"
                 class="h-4 w-4 -translate-y-px transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
@@ -107,7 +104,6 @@ const props = withDefaults(
 const whatsLink = `https://wa.me/${props.whatsappNumber.replace(/\D/g, '')}`;
 const email = props.email;
 
-// Ícones inline
 const icons = {
   mail:
     '<svg viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5L4 8V6l8 5 8-5v2Z"/></svg>',

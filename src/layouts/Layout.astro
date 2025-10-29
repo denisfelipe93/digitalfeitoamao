@@ -56,6 +56,19 @@ const {
         window.addEventListener('pageshow', () => window.scrollTo(0, 0), { once: true });
       } catch (_) {}
     </script>
+
+    <!-- 🔥 Ajusta --nav-h conforme a altura real da navbar (offset perfeito das âncoras) -->
+    <script is:inline>
+      (function () {
+        const setNavH = () => {
+          const nav = document.querySelector('nav');
+          const h = (nav?.offsetHeight || 88) + 'px';
+          document.documentElement.style.setProperty('--nav-h', h);
+        };
+        window.addEventListener('load', setNavH, { once: true });
+        window.addEventListener('resize', setNavH);
+      })();
+    </script>
   </head>
 
   <body class={`min-h-screen antialiased font-sans overflow-x-hidden ${bodyClass}`}>

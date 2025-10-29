@@ -1,8 +1,15 @@
 @import "tailwindcss";
 
 /* ajustes leves */
-:root { scroll-behavior: smooth; }
+:root {
+  --nav-h: 88px;               /* altura padrão da navbar (ajustada via JS no Layout) */
+  scroll-behavior: smooth;
+}
 html, body { min-height: 100%; }
+
+/* 🔥 TODAS as âncoras respeitam a altura da navbar */
+html { scroll-padding-top: var(--nav-h); }
+
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
