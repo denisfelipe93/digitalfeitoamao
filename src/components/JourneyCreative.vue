@@ -15,7 +15,6 @@
 
       <!-- Conteúdo -->
       <div class="mt-12 sm:mt-14 grid gap-8 sm:gap-10 md:grid-cols-12 items-start">
-        <!-- Cards (3x com “papel de caderno”, sem pauta vertical) -->
         <div class="md:col-span-7 space-y-4">
           <div class="card-paper">
             <span class="chip bg-[#E3D8CB] text-[#6B5E52]">01</span>
