@@ -55,7 +55,7 @@
             </figcaption>
           </figure>
 
-          <!-- CTA WhatsApp com aria-label -->
+          <!-- CTA WhatsApp -->
           <a
             href="https://wa.me/5511976990921?text=Oi%2C%20vim%20pelo%20site%20e%20gostaria%20de%20agendar%20uma%20conversa."
             target="_blank" rel="noopener"
@@ -79,23 +79,53 @@
 </script>
 
 <style scoped>
-/* ---------- Fundo bege + textura geral ---------- */
+/* === THEME: ROSE === */
 .beige-bg{
-  background: linear-gradient(180deg,#CBBDAF 0%, #C3B5A5 46%, #BFB2A3 100%);
+  background: linear-gradient(180deg,#F8EFEC 0%, #F3E6E1 46%, #ECDAD2 100%);
 
-  /* Variáveis de linhas (cards x depoimento) */
+  --ink:#233037;
+  --ink-soft:#4C5056;
+  --paper:#FBF6F2;
+  --paper-border:#E7D5C9;
+  --card-shadow:0 8px 20px -14px rgba(39,40,41,.16), inset 0 1px 0 rgba(255,255,255,.35);
+  --accent:#CC7E6B;
+  --accent-ring: color-mix(in oklab, var(--accent) 60%, white);
+
   --rule-gap-cards: 18px;
-  --rule-color-cards: rgba(35,48,55,.09);
+  --rule-color-cards: rgba(35,48,55,.10);
   --rule-gap-quote: 22px;
-  --rule-color-quote: rgba(35,48,55,.06);
+  --rule-color-quote: rgba(35,48,55,.075);
 }
 .beige-bg::before{
-  content:""; position:fixed; inset:0; pointer-events:none; opacity:.05;
+  content:""; position:absolute; inset:0; pointer-events:none; opacity:.05;
   background-image:
     repeating-linear-gradient(0deg,rgba(0,0,0,.05) 0,rgba(0,0,0,.05) 1px,transparent 1px,transparent 3px),
     repeating-linear-gradient(90deg,rgba(0,0,0,.035) 0,rgba(0,0,0,.035) 1px,transparent 1px,transparent 4px);
   mix-blend-mode:multiply;
 }
+
+
+/* ====== APLICAÇÃO DOS TOKENS ====== */
+
+/* Fundo + textura */
+.beige-bg{
+  position: relative;
+  background: linear-gradient(180deg,var(--bg0) 0%, var(--bg1) 46%, var(--bg2) 100%);
+  color: var(--ink);
+}
+.beige-bg::before{
+  content:""; position:absolute; inset:0; pointer-events:none; opacity:.05;
+  background-image:
+    repeating-linear-gradient(0deg,rgba(0,0,0,.05) 0,rgba(0,0,0,.05) 1px,transparent 1px,transparent 3px),
+    repeating-linear-gradient(90deg,rgba(0,0,0,.035) 0,rgba(0,0,0,.035) 1px,transparent 1px,transparent 4px);
+  mix-blend-mode:multiply;
+}
+
+/* Título e subtítulo: usa tokens (sobrepõe Tailwind inline) */
+.beige-bg h2{ color: var(--ink) !important; }
+.beige-bg h2 .font-semibold{ color: var(--ink-soft) !important; }
+/* Sublinhado decorativo do título usa o acento do tema */
+.beige-bg h2 svg path{ stroke: var(--accent); }
 
 /* ---------- Cards (papel de caderno) ---------- */
 .card-paper{
@@ -103,9 +133,9 @@
   display:flex; align-items:center; gap:1rem;
   padding:1rem 1.25rem;
   border-radius: 18px;
-  background:#F6F1EA;
-  border:1px solid #D9CEC2;
-  box-shadow: 0 8px 20px -14px rgba(39,40,41,.16), inset 0 1px 0 rgba(255,255,255,.35);
+  background: var(--paper);
+  border:1px solid var(--paper-border);
+  box-shadow: var(--card-shadow);
 }
 .card-paper::before{
   content:""; position:absolute; inset:0; z-index:0; pointer-events:none;
@@ -113,23 +143,24 @@
     repeating-linear-gradient(0deg, var(--rule-color-cards) 0 1px, transparent 1px var(--rule-gap-cards));
 }
 .card-paper > *{ position:relative; z-index:1; }
+.item{ font-size:1.125rem; color: var(--ink); }
 
-.item{ font-size:1.125rem; }
-
-/* Chips */
+/* Chips (aplicação por tema — mantém suas classes, mas dá fallback unificado) */
 .chip{
   display:inline-flex; align-items:center; justify-content:center;
   width:2.5rem; height:2rem; border-radius:.75rem;
   font-weight:700; font-size:.9rem; letter-spacing:.02em;
+  background: var(--chip-bg);
+  color: var(--chip-fg);
 }
 
 /* ---------- Depoimento ---------- */
 .quote-paper{
   position:relative; overflow:hidden;
-  background:#F6F1EA;
-  border:1px solid #D9CEC2;
+  background: var(--paper);
+  border:1px solid var(--paper-border);
   border-radius:18px;
-  box-shadow: 0 8px 20px -14px rgba(39,40,41,.16), inset 0 1px 0 rgba(255,255,255,.35);
+  box-shadow: var(--card-shadow);
   padding:1.5rem;
 }
 .quote-paper::before{
@@ -137,17 +168,30 @@
   background-image:
     repeating-linear-gradient(0deg, var(--rule-color-quote) 0 1px, transparent 1px var(--rule-gap-quote));
 }
-.quote-text{ margin:0; }
+.quote-text{ margin:0; color: var(--ink-soft); }
+
+/* Figcaption: nome/cargo usando tokens */
+figcaption .font-semibold{ color: var(--ink); }
+figcaption .text-sm{ color: color-mix(in oklab, var(--ink) 55%, white); }
 
 /* ---------- CTA ---------- */
 .btn-terracotta{
   display:inline-flex; align-items:center; gap:.5rem;
   padding:.9rem 1.25rem; border-radius:9999px;
-  background:#CC7E6B; color:#FFF;
-  font-weight:700; border:1px solid rgba(39,40,41,.12);
-  transition: transform .15s ease, filter .15s ease;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-weight:700; border:1px solid color-mix(in oklab, var(--accent) 20%, black);
+  box-shadow: 0 8px 20px -14px rgba(39,40,41,.16);
+  transition: transform .15s ease, filter .15s ease, box-shadow .15s ease;
+  text-decoration: none;
 }
 .btn-terracotta:hover{ transform: translateY(-1px); filter: brightness(1.03); }
+.btn-terracotta:focus-visible{
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--accent-ring),
+    0 8px 20px -14px rgba(39,40,41,.16);
+}
 
 /* ---------- Acessibilidade: reduzir animações ---------- */
 @media (prefers-reduced-motion: reduce){
